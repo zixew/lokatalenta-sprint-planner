@@ -1,4 +1,13 @@
-import { ArrowDownToLine, CheckCircle2, Play, Plus } from 'lucide-react';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowDownToLine,
+  CheckCircle2,
+  Play,
+  Plus,
+} from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CANONICAL_AGENTS, CANONICAL_DIVISIONS } from '../../contracts/canonical.ts';
 import type { SprintRecord } from '../../lib/api.ts';
 import { Badge } from '../ui/Badge.tsx';
 import { Button } from '../ui/Button.tsx';
@@ -33,6 +42,75 @@ export function SprintHeaderBar({
   const utilizationPct =
     capacity > 0 ? Math.round((committed / capacity) * 100) : committed > 0 ? 100 : 0;
 
+  const [healthOpen, setHealthOpen] = useState(false);
+  const healthRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!healthOpen) return;
+    const onOutside = (e: MouseEvent) => {
+      if (healthRef.current && !healthRef.current.contains(e.target as Node)) {
+        setHealthOpen(false);
+      }
+    };
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setHealthOpen(false);
+    };
+    document.addEventListener('mousedown', onOutside);
+    window.addEventListener('keydown', onEsc);
+    return () => {
+      document.removeEventListener('mousedown', onOutside);
+      window.removeEventListener('keydown', onEsc);
+    };
+  }, [healthOpen]);
+
+  const health = useMemo(() => {
+    if (!selectedSprint) return null;
+
+    const overallocatedDivs = CANONICAL_DIVISIONS.filter((div) => {
+      const divLoad = selectedSprint.items
+        .filter((item) => item.ownerDivision === div.id)
+        .reduce((acc, item) => acc + item.storyPoints, 0);
+      return divLoad > (selectedSprint.divisionCapacities[div.id] ?? 0);
+    }).length;
+
+    const overallocatedAgents = CANONICAL_AGENTS.filter((agent) => {
+      const agentLoad = selectedSprint.items
+        .filter((item) => item.ownerAgentId === agent.id)
+        .reduce((acc, item) => acc + item.storyPoints, 0);
+      return agentLoad > (selectedSprint.agentCapacities[agent.id] ?? 0);
+    }).length;
+
+    const hasGoal = Boolean(selectedSprint.goal?.trim());
+    const hasScope = selectedSprint.metrics.itemCount > 0;
+    const hasCeremonies = selectedSprint.ceremonies.length > 0;
+    const balancedLoad = utilizationPct <= 100 && overallocatedDivs === 0 && overallocatedAgents === 0;
+
+    let label = 'Healthy';
+    let tone: 'teal' | 'amber' | 'rose' = 'teal';
+
+    if (!balancedLoad) {
+      label = 'Overallocated';
+      tone = 'rose';
+    } else if (!hasScope || !hasGoal) {
+      label = 'Needs Prep';
+      tone = 'amber';
+    } else if (utilizationPct >= 85) {
+      label = 'Optimal Load';
+      tone = 'teal';
+    }
+
+    return {
+      label,
+      tone,
+      overallocatedDivs,
+      overallocatedAgents,
+      hasGoal,
+      hasScope,
+      hasCeremonies,
+      balancedLoad,
+    };
+  }, [selectedSprint, utilizationPct]);
+
   return (
     <section className="rounded-xl border border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22] p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -64,6 +142,70 @@ export function SprintHeaderBar({
               <Badge tone={statusBadgeTone(selectedSprint.status)}>
                 {selectedSprint.status.toUpperCase()}
               </Badge>
+            )}
+
+            {selectedSprint && health && (
+              <div ref={healthRef} className="relative">
+                <button
+                  type="button"
+                  data-testid="sprint-health-pill"
+                  aria-expanded={healthOpen}
+                  onClick={() => setHealthOpen((o) => !o)}
+                  className={`inline-flex min-h-[26px] items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all duration-150 ${
+                    health.tone === 'rose'
+                      ? 'border-rose-200 bg-rose-50 text-[#E11D48] hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
+                      : health.tone === 'amber'
+                        ? 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                        : 'border-teal-200 bg-teal-50 text-[#0F766E] hover:bg-teal-100 dark:border-teal-800 dark:bg-teal-950/60 dark:text-teal-300'
+                  }`}
+                >
+                  {health.tone === 'rose' || health.tone === 'amber' ? (
+                    <AlertTriangle className="h-3 w-3" aria-hidden="true" />
+                  ) : (
+                    <Activity className="h-3 w-3" aria-hidden="true" />
+                  )}
+                  <span>Readiness: {health.label}</span>
+                </button>
+
+                {healthOpen && (
+                  <div
+                    data-testid="sprint-health-popover"
+                    className="absolute left-0 top-full z-40 mt-2 w-72 rounded-xl border border-[#E5E3DC] bg-white p-3.5 text-xs shadow-xl dark:border-zinc-700 dark:bg-[#161B22]"
+                  >
+                    <div className="mb-2 border-b border-[#E5E3DC] pb-2 font-bold text-zinc-900 dark:border-zinc-800 dark:text-slate-100">
+                      Sprint Readiness Checklist
+                    </div>
+                    <ul className="space-y-2">
+                      <li className="flex items-center justify-between">
+                        <span className="text-zinc-600 dark:text-slate-400">Sprint Goal Defined</span>
+                        <span className={health.hasGoal ? 'font-semibold text-[#0F766E] dark:text-teal-400' : 'font-semibold text-amber-700 dark:text-amber-400'}>
+                          {health.hasGoal ? 'Ready' : 'Missing'}
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-zinc-600 dark:text-slate-400">Scope Committed</span>
+                        <span className={health.hasScope ? 'font-mono-tabular font-semibold text-[#0F766E] dark:text-teal-400' : 'font-semibold text-amber-700 dark:text-amber-400'}>
+                          {health.hasScope ? `${selectedSprint.metrics.itemCount} items` : '0 items'}
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-zinc-600 dark:text-slate-400">Capacity Balance</span>
+                        <span className={health.balancedLoad ? 'font-mono-tabular font-semibold text-[#0F766E] dark:text-teal-400' : 'font-mono-tabular font-semibold text-[#E11D48] dark:text-rose-400'}>
+                          {health.balancedLoad
+                            ? `${utilizationPct}% load`
+                            : `${health.overallocatedDivs} div · ${health.overallocatedAgents} agent over`}
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-zinc-600 dark:text-slate-400">Ceremonies Logged</span>
+                        <span className="font-mono-tabular font-semibold text-zinc-800 dark:text-slate-200">
+                          {selectedSprint.ceremonies.length}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             )}
 
             {selectedSprint && (

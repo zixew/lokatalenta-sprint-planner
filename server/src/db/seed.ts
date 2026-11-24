@@ -244,6 +244,104 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       '2026-11-16T09:00:00.000Z',
       '2026-11-16T09:00:00.000Z',
     );
+
+    const spr16Created = '2026-11-24T12:00:00.000Z';
+    insertSprint.run(
+      'SPR-16',
+      'Sprint 16 — Tech Debt, Complex Responsive & 3-POV QA',
+      'Enforce 100% free-access policy, audit Mermaid/ELK & serverless /tmp tech debt, and execute 375px/768px/1280px+ 3-POV QA.',
+      'planned',
+      '2026-11-30',
+      '2026-12-11',
+      spr16Created,
+      spr16Created,
+    );
+    const spr16DivCaps = buildSeedDivisionCapacities(1);
+    const spr16AgentCaps = buildSeedAgentCapacities(1);
+    for (const div of CANONICAL_DIVISIONS) {
+      insertDivCap.run('SPR-16', div.id, spr16DivCaps[div.id]);
+    }
+    for (const agent of CANONICAL_AGENTS) {
+      insertAgentCap.run('SPR-16', agent.id, spr16AgentCaps[agent.id]);
+    }
+    insertItem.run(
+      'SPR-16',
+      'FREE-001',
+      'Enforce 100% Free-Access Policy & Zero Paywall Guardrails',
+      3,
+      'executive',
+      1,
+      'in_sprint',
+      1,
+      spr16Created,
+      null,
+      spr16Created,
+    );
+    insertItem.run(
+      'SPR-16',
+      'DEBT-161',
+      'Audit Mermaid/ELK Chunk Budget & Serverless /tmp SQLite Persistence',
+      5,
+      'architecture',
+      4,
+      'in_sprint',
+      1,
+      spr16Created,
+      null,
+      spr16Created,
+    );
+    insertItem.run(
+      'SPR-16',
+      'QAE-161',
+      'Sprint 16 Complex Responsive Matrix (375px/768px/1280px+) & 3-POV E2E Suite',
+      8,
+      'qa',
+      8,
+      'in_sprint',
+      1,
+      spr16Created,
+      null,
+      spr16Created,
+    );
+    insertItem.run(
+      'SPR-16',
+      'SEC-161',
+      'Multi-Step Race Condition, XSS/CSV Injection & State Recovery Verification',
+      5,
+      'devops',
+      17,
+      'in_sprint',
+      1,
+      spr16Created,
+      null,
+      spr16Created,
+    );
+    insertItem.run(
+      'SPR-16',
+      'UX-161',
+      'Verify 3-POV (Student/Candidate, Teacher/Recruiter, Admin) Responsive Journeys',
+      5,
+      'lounge',
+      13,
+      'in_sprint',
+      1,
+      spr16Created,
+      null,
+      spr16Created,
+    );
+    insertCeremony.run(
+      'CER-SPR16-PLAN',
+      'SPR-16',
+      'planning',
+      2,
+      'Sprint 16 locked for 100% Free-Access governance, tech debt mitigation, and complex 375px/768px/1280px+ 3-POV QA.',
+      JSON.stringify([
+        { text: 'Verify 0 horizontal overflow on 375px mobile across all apps', ownerAgentId: 7, done: false },
+        { text: 'Verify XSS, CSV injection, race conditions, and state recovery', ownerAgentId: 17, done: false },
+      ]),
+      spr16Created,
+      spr16Created,
+    );
   });
 
   return true;

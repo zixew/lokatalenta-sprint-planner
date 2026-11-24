@@ -1,5 +1,5 @@
 import { ArrowDownToLine, ChevronDown, ChevronRight, Save, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   AGENTS_BY_ID,
   CANONICAL_AGENTS,
@@ -12,6 +12,8 @@ import type { SprintRecord } from '../../lib/api.ts';
 import { Badge } from '../ui/Badge.tsx';
 import { Button } from '../ui/Button.tsx';
 import { ProgressBar } from '../ui/ProgressBar.tsx';
+
+type AgentAvailabilityFilter = 'all' | 'overallocated' | 'available';
 
 function getTone(committed: number, capacity: number): 'teal' | 'amber' | 'rose' {
   if (committed > capacity) return 'rose';
@@ -95,6 +97,29 @@ function CapacityMatrixInner({
   const [divDraft, setDivDraft] = useState<Record<DivisionId, number>>(sprint.divisionCapacities);
   const [agentDraft, setAgentDraft] = useState<Record<number, number>>(sprint.agentCapacities);
   const [dirty, setDirty] = useState(false);
+  const [agentFilter, setAgentFilter] = useState<AgentAvailabilityFilter>('all');
+
+  const agentLoadById = useMemo(() => {
+    const map = new Map<number, number>();
+    for (const item of sprint.items) {
+      if (item.ownerAgentId != null) {
+        map.set(item.ownerAgentId, (map.get(item.ownerAgentId) ?? 0) + item.storyPoints);
+      }
+    }
+    return map;
+  }, [sprint.items]);
+
+  const { overallocatedCount, availableCount } = useMemo(() => {
+    let over = 0;
+    let avail = 0;
+    for (const agent of CANONICAL_AGENTS) {
+      const load = agentLoadById.get(agent.id) ?? 0;
+      const cap = agentDraft[agent.id] ?? 0;
+      if (load > cap) over += 1;
+      else if (cap > load) avail += 1;
+    }
+    return { overallocatedCount: over, availableCount: avail };
+  }, [agentLoadById, agentDraft]);
 
   const handleAgentCapacityChange = (agentId: number, divisionId: DivisionId, nextValue: number) => {
     const clamped = Math.max(0, Math.min(1000, Number.isFinite(nextValue) ? nextValue : 0));
@@ -175,6 +200,126 @@ function CapacityMatrixInner({
           </div>
         </div>
 
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#E5E3DC] pb-3 dark:border-zinc-800">
+          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter agents by availability">
+            <button
+              type="button"
+              data-testid="agent-filter-all"
+              aria-pressed={agentFilter === 'all'}
+              onClick={() => setAgentFilter('all')}
+              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                agentFilter === 'all'
+                  ? 'border-[#0F766E] bg-teal-50 text-[#0F766E] dark:border-teal-500 dark:bg-teal-950/60 dark:text-teal-300'
+                  : 'border-[#E5E3DC] bg-[#F6F5F1] text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-[#0D1117] dark:text-slate-300 dark:hover:bg-zinc-800'
+              }`}
+            >
+              All Agents ({CANONICAL_AGENTS.length})
+            </button>
+            <button
+              type="button"
+              data-testid="agent-filter-overallocated"
+              aria-pressed={agentFilter === 'overallocated'}
+              onClick={() => setAgentFilter('overallocated')}
+              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                agentFilter === 'overallocated'
+                  ? 'border-[#E11D48] bg-rose-50 text-[#E11D48] dark:border-rose-500 dark:bg-rose-950/60 dark:text-rose-300'
+                  : 'border-[#E5E3DC] bg-[#F6F5F1] text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-[#0D1117] dark:text-slate-300 dark:hover:bg-zinc-800'
+              }`}
+            >
+              Overallocated ({overallocatedCount})
+            </button>
+            <button
+              type="button"
+              data-testid="agent-filter-available"
+              aria-pressed={agentFilter === 'available'}
+              onClick={() => setAgentFilter('available')}
+              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                agentFilter === 'available'
+                  ? 'border-emerald-700 bg-emerald-50 text-emerald-700 dark:border-emerald-500 dark:bg-emerald-950/60 dark:text-emerald-300'
+                  : 'border-[#E5E3DC] bg-[#F6F5F1] text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-[#0D1117] dark:text-slate-300 dark:hover:bg-zinc-800'
+              }`}
+            >
+              Available ({availableCount})
+            </button>
+          </div>
+          {divisionFilter !== 'all' ? (
+            <button
+              type="button"
+              onClick={() => setDivisionFilter('all')}
+              className="text-xs font-semibold text-[#0F766E] underline hover:no-underline dark:text-teal-400"
+            >
+              Show all 6 divisions
+            </button>
+          ) : null}
+        </div>
+
+        {/* Interactive Division Utilization Overview */}
+        <div
+          data-testid="division-utilization-strip"
+          className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3"
+        >
+          {CANONICAL_DIVISIONS.map((div) => {
+            const committed = sprint.items
+              .filter((item) => item.ownerDivision === div.id)
+              .reduce((acc, item) => acc + item.storyPoints, 0);
+            const cap = divDraft[div.id] ?? 0;
+            const pct = cap > 0 ? Math.round((committed / cap) * 100) : committed > 0 ? 100 : 0;
+            const selected = divisionFilter === div.id;
+            const tone = getTone(committed, cap);
+
+            return (
+              <button
+                key={div.id}
+                type="button"
+                onClick={() => setDivisionFilter(selected ? 'all' : div.id)}
+                className={`rounded-lg border p-2 text-left transition-all duration-150 ${
+                  selected
+                    ? 'border-[#0F766E] bg-teal-50/70 dark:border-teal-500 dark:bg-teal-950/40'
+                    : 'border-[#E5E3DC] bg-[#FAF9F6] hover:border-zinc-300 dark:border-zinc-800 dark:bg-[#0D1117] dark:hover:border-zinc-700'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-1 text-[11px]">
+                  <span className="truncate font-semibold text-zinc-800 dark:text-slate-200">
+                    {div.shortName}
+                  </span>
+                  <span
+                    className={`font-mono-tabular font-bold ${
+                      tone === 'rose'
+                        ? 'text-[#E11D48] dark:text-rose-400'
+                        : tone === 'amber'
+                          ? 'text-[#D97706] dark:text-amber-400'
+                          : 'text-[#0F766E] dark:text-teal-400'
+                    }`}
+                  >
+                    {pct}%
+                  </span>
+                </div>
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+                  <div
+                    className={`h-full rounded-full transition-all duration-200 ${
+                      tone === 'rose'
+                        ? 'bg-[#E11D48]'
+                        : tone === 'amber'
+                          ? 'bg-[#D97706]'
+                          : 'bg-[#0F766E] dark:bg-[#14b8a6]'
+                    }`}
+                    style={{ width: `${Math.min(100, pct)}%` }}
+                  />
+                </div>
+              </button>
+            );
+          })}
+          {agentFilter !== 'all' &&
+          ((agentFilter === 'overallocated' && overallocatedCount === 0) ||
+            (agentFilter === 'available' && availableCount === 0)) ? (
+            <div className="rounded-lg border border-dashed border-[#E5E3DC] bg-[#FAF9F6] p-6 text-center text-xs text-zinc-600 dark:border-zinc-800 dark:bg-[#0D1117] dark:text-slate-400">
+              {agentFilter === 'overallocated'
+                ? 'No overallocated agents in this sprint — all agent loads are within capacity.'
+                : 'No agents with remaining available capacity.'}
+            </div>
+          ) : null}
+        </div>
+
         <div className="mt-4 space-y-3">
           {visibleDivisions.map((division) => {
             const divCommitted = sprint.items
@@ -183,9 +328,18 @@ function CapacityMatrixInner({
             const divCapacity = divDraft[division.id] ?? 0;
             const tone = getTone(divCommitted, divCapacity);
             const isExpanded = expandedDivisions[division.id];
-            const divAgents = CANONICAL_AGENTS.filter(
-              (agent) => agent.divisionId === division.id,
-            );
+            const divAgents = CANONICAL_AGENTS.filter((agent) => {
+              if (agent.divisionId !== division.id) return false;
+              const load = agentLoadById.get(agent.id) ?? 0;
+              const cap = agentDraft[agent.id] ?? 0;
+              if (agentFilter === 'overallocated') return load > cap;
+              if (agentFilter === 'available') return cap > load;
+              return true;
+            });
+
+            if (agentFilter !== 'all' && divAgents.length === 0) {
+              return null;
+            }
 
             return (
               <div
@@ -318,6 +472,15 @@ function CapacityMatrixInner({
               </div>
             );
           })}
+          {agentFilter !== 'all' &&
+          ((agentFilter === 'overallocated' && overallocatedCount === 0) ||
+            (agentFilter === 'available' && availableCount === 0)) ? (
+            <div className="rounded-lg border border-dashed border-[#E5E3DC] bg-[#FAF9F6] p-6 text-center text-xs text-zinc-600 dark:border-zinc-800 dark:bg-[#0D1117] dark:text-slate-400">
+              {agentFilter === 'overallocated'
+                ? 'No overallocated agents in this sprint — all agent loads are within capacity.'
+                : 'No agents with remaining available capacity.'}
+            </div>
+          ) : null}
         </div>
       </section>
 
