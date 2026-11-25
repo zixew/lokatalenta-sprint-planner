@@ -114,16 +114,31 @@ function CapacityMatrixInner({
   const [agentDraft, setAgentDraft] = useState<Record<number, number>>(sprint.agentCapacities);
   const [dirty, setDirty] = useState(false);
   const [agentFilter, setAgentFilter] = useState<AgentAvailabilityFilter>('all');
+  const [loadMetric, setLoadMetric] = useState<'active' | 'committed'>('active');
 
-  const agentLoadById = useMemo(() => {
-    const map = new Map<number, number>();
+  const agentLoads = useMemo(() => {
+    const activeMap = new Map<number, number>();
+    const doneMap = new Map<number, number>();
+    const totalMap = new Map<number, number>();
     for (const item of sprint.items) {
       if (item.ownerAgentId != null) {
-        map.set(item.ownerAgentId, (map.get(item.ownerAgentId) ?? 0) + item.storyPoints);
+        const curTotal = totalMap.get(item.ownerAgentId) ?? 0;
+        totalMap.set(item.ownerAgentId, curTotal + item.storyPoints);
+        if (item.status === 'done') {
+          const curDone = doneMap.get(item.ownerAgentId) ?? 0;
+          doneMap.set(item.ownerAgentId, curDone + item.storyPoints);
+        } else {
+          const curActive = activeMap.get(item.ownerAgentId) ?? 0;
+          activeMap.set(item.ownerAgentId, curActive + item.storyPoints);
+        }
       }
     }
-    return map;
+    return { activeMap, doneMap, totalMap };
   }, [sprint.items]);
+
+  const agentLoadById = useMemo(() => {
+    return loadMetric === 'active' ? agentLoads.activeMap : agentLoads.totalMap;
+  }, [loadMetric, agentLoads]);
 
   const { overallocatedCount, availableCount } = useMemo(() => {
     let over = 0;
@@ -277,15 +292,43 @@ function CapacityMatrixInner({
               Available ({availableCount})
             </button>
           </div>
-          {divisionFilter !== 'all' ? (
-            <button
-              type="button"
-              onClick={() => setDivisionFilter('all')}
-              className="text-xs font-semibold text-[#0F766E] underline hover:no-underline dark:text-teal-400"
-            >
-              Show all 6 divisions
-            </button>
-          ) : null}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex rounded-lg border border-[#E5E3DC] dark:border-zinc-700 bg-[#F6F5F1] dark:bg-[#0D1117] p-0.5 text-xs font-medium">
+              <button
+                type="button"
+                onClick={() => setLoadMetric('active')}
+                className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
+                  loadMetric === 'active'
+                    ? 'bg-white dark:bg-zinc-800 text-[#0F766E] dark:text-teal-300 shadow-xs'
+                    : 'text-[#71717A] hover:text-[#18181B] dark:hover:text-slate-200'
+                }`}
+              >
+                Active Load (In-Flight)
+              </button>
+              <button
+                type="button"
+                onClick={() => setLoadMetric('committed')}
+                className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
+                  loadMetric === 'committed'
+                    ? 'bg-white dark:bg-zinc-800 text-[#0F766E] dark:text-teal-300 shadow-xs'
+                    : 'text-[#71717A] hover:text-[#18181B] dark:hover:text-slate-200'
+                }`}
+              >
+                Total Committed
+              </button>
+            </div>
+
+            {divisionFilter !== 'all' ? (
+              <button
+                type="button"
+                onClick={() => setDivisionFilter('all')}
+                className="text-xs font-semibold text-[#0F766E] underline hover:no-underline dark:text-teal-400"
+              >
+                Show all 6 divisions
+              </button>
+            ) : null}
+          </div>
         </div>
 
         {/* Interactive Division Utilization Overview */}
@@ -297,10 +340,15 @@ function CapacityMatrixInner({
             const committed = sprint.items
               .filter((item) => item.ownerDivision === div.id)
               .reduce((acc, item) => acc + item.storyPoints, 0);
+            const done = sprint.items
+              .filter((item) => item.ownerDivision === div.id && item.status === 'done')
+              .reduce((acc, item) => acc + item.storyPoints, 0);
+            const active = committed - done;
+            const displayPoints = loadMetric === 'active' ? active : committed;
             const cap = divDraft[div.id] ?? 0;
-            const pct = cap > 0 ? Math.round((committed / cap) * 100) : committed > 0 ? 100 : 0;
+            const pct = cap > 0 ? Math.round((displayPoints / cap) * 100) : displayPoints > 0 ? 100 : 0;
             const selected = divisionFilter === div.id;
-            const tone = getTone(committed, cap);
+            const tone = getTone(displayPoints, cap);
 
             return (
               <button
@@ -360,8 +408,13 @@ function CapacityMatrixInner({
             const divCommitted = sprint.items
               .filter((item) => item.ownerDivision === division.id)
               .reduce((acc, item) => acc + item.storyPoints, 0);
+            const divDone = sprint.items
+              .filter((item) => item.ownerDivision === division.id && item.status === 'done')
+              .reduce((acc, item) => acc + item.storyPoints, 0);
+            const divActive = divCommitted - divDone;
+            const divEffective = loadMetric === 'active' ? divActive : divCommitted;
             const divCapacity = divDraft[division.id] ?? 0;
-            const tone = getTone(divCommitted, divCapacity);
+            const tone = getTone(divEffective, divCapacity);
             const isExpanded = expandedDivisions[division.id];
             const divAgents = CANONICAL_AGENTS.filter((agent) => {
               if (agent.divisionId !== division.id) return false;
@@ -408,13 +461,13 @@ function CapacityMatrixInner({
                   </button>
 
                   <div className="flex items-center gap-3">
-                    {divCommitted > divCapacity && (
+                    {divEffective > divCapacity && (
                       <Badge tone="rose">Overallocated</Badge>
                     )}
 
                     <div className="flex items-center gap-1.5 text-xs">
                       <span className="font-mono-tabular font-semibold text-[#18181B] dark:text-slate-100">
-                        {divCommitted}
+                        {divEffective}
                       </span>
                       <span className="text-[#71717A]">/</span>
                       <label className="sr-only" htmlFor={`div-cap-${division.id}`}>
@@ -432,14 +485,19 @@ function CapacityMatrixInner({
                         className="w-16 rounded border border-[#E5E3DC] dark:border-zinc-700 bg-white px-2 py-1 text-right font-mono-tabular text-xs font-semibold"
                       />
                       <span className="text-[#71717A]">SP</span>
+                      {loadMetric === 'active' && divDone > 0 ? (
+                        <span className="font-mono-tabular text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                          ({divDone} done)
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </div>
 
                 <div className="px-3.5 pb-3">
                   <ProgressBar
-                    value={divCommitted}
-                    max={Math.max(divCapacity, divCommitted, 1)}
+                    value={divEffective}
+                    max={Math.max(divCapacity, divEffective, 1)}
                     tone={tone}
                     label={`${division.shortName} utilization`}
                   />
@@ -448,11 +506,12 @@ function CapacityMatrixInner({
                 {isExpanded && (
                   <div className="border-t border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22] divide-y divide-[#E5E3DC] dark:divide-zinc-800 rounded-b-lg">
                     {divAgents.map((agent) => {
-                      const agentCommitted = sprint.items
-                        .filter((item) => item.ownerAgentId === agent.id)
-                        .reduce((acc, item) => acc + item.storyPoints, 0);
+                      const agentCommitted = agentLoads.totalMap.get(agent.id) ?? 0;
+                      const agentDone = agentLoads.doneMap.get(agent.id) ?? 0;
+                      const agentActive = agentLoads.activeMap.get(agent.id) ?? 0;
+                      const agentEffective = loadMetric === 'active' ? agentActive : agentCommitted;
                       const agentCapacity = agentDraft[agent.id] ?? 0;
-                      const agentOver = agentCommitted > agentCapacity;
+                      const agentOver = agentEffective > agentCapacity;
 
                       return (
                         <div
@@ -476,8 +535,13 @@ function CapacityMatrixInner({
 
                           <div className="flex items-center gap-2 text-xs">
                             <span className="font-mono-tabular text-[#52525B] dark:text-slate-300">
-                              {agentCommitted} SP load
+                              {agentEffective} SP {loadMetric === 'active' ? 'active' : 'load'}
                             </span>
+                            {loadMetric === 'active' && agentDone > 0 ? (
+                              <span className="font-mono-tabular text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                                ({agentDone} done)
+                              </span>
+                            ) : null}
                             <label className="sr-only" htmlFor={`agent-cap-${agent.id}`}>
                               Capacity for {agent.name}
                             </label>

@@ -172,14 +172,14 @@ export function SprintHeaderBar({
 
     const overallocatedDivs = CANONICAL_DIVISIONS.filter((div) => {
       const divLoad = selectedSprint.items
-        .filter((item) => item.ownerDivision === div.id)
+        .filter((item) => item.ownerDivision === div.id && item.status !== 'done')
         .reduce((acc, item) => acc + item.storyPoints, 0);
       return divLoad > (selectedSprint.divisionCapacities[div.id] ?? 0);
     }).length;
 
     const overallocatedAgents = CANONICAL_AGENTS.filter((agent) => {
       const agentLoad = selectedSprint.items
-        .filter((item) => item.ownerAgentId === agent.id)
+        .filter((item) => item.ownerAgentId === agent.id && item.status !== 'done')
         .reduce((acc, item) => acc + item.storyPoints, 0);
       return agentLoad > (selectedSprint.agentCapacities[agent.id] ?? 0);
     }).length;
