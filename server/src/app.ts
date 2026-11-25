@@ -15,6 +15,7 @@ import {
 } from './config.js';
 import { openDatabase } from './db/database.js';
 import { seedIfEmpty } from './db/seed.js';
+import { TursoAdapter } from './db/tursoAdapter.js';
 import { SprintService } from './domain/sprintService.js';
 import { ApiError } from './domain/validation.js';
 import { BacklogClient } from './integrations/backlogClient.js';
@@ -33,11 +34,15 @@ export interface CreateAppOptions {
   readonly corsOrigins?: readonly string[];
   readonly fetchImpl?: typeof fetch;
   readonly clientDistDir?: string;
+  readonly tursoAdapter?: TursoAdapter;
 }
 
 export interface SprintPlannerAppContext {
   readonly app: Express;
   readonly db: DatabaseSync;
+  readonly tursoAdapter: TursoAdapter;
+  readonly ready: () => Promise<void>;
+  readonly syncToTurso: () => Promise<void>;
   readonly close: () => void;
 }
 
@@ -59,6 +64,29 @@ export function createApp(options: CreateAppOptions = {}): SprintPlannerAppConte
   if (options.seed) {
     seedIfEmpty(db);
   }
+
+  const tursoAdapter = options.tursoAdapter ?? new TursoAdapter();
+  const initPromise: Promise<void> = tursoAdapter.isConfigured
+    ? tursoAdapter
+        .pullToLocal(db)
+        .then(async (count) => {
+          if (count === 0) {
+            await tursoAdapter.pushFromLocal(db);
+          }
+        })
+        .catch((err) => {
+          console.error('[sprint-planner] Turso cold-start hydration failed, using local DB:', err);
+        })
+    : Promise.resolve();
+
+  const syncToTurso = async (): Promise<void> => {
+    if (!tursoAdapter.isConfigured) return;
+    try {
+      await tursoAdapter.pushFromLocal(db);
+    } catch (err) {
+      console.error('[sprint-planner] Turso write-through sync failed:', err);
+    }
+  };
 
   const sprintService = new SprintService(db);
   const backlogClient = new BacklogClient({
@@ -82,14 +110,30 @@ export function createApp(options: CreateAppOptions = {}): SprintPlannerAppConte
   );
   app.use(express.json({ limit: '1mb' }));
 
+  app.use('/api', async (_req, _res, next) => {
+    await initPromise;
+    next();
+  });
+
   app.use(
     '/api',
     createHealthRouter({
       port,
       backlogApiUrl,
       eventGatewayUrl,
+      tursoAdapter,
     }),
   );
+  app.use('/api/sprints', (req, res, next) => {
+    if (tursoAdapter.isConfigured && ['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) {
+      res.on('finish', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          void syncToTurso();
+        }
+      });
+    }
+    next();
+  });
   app.use(
     '/api/sprints',
     createSprintsRouter({
@@ -145,8 +189,9 @@ export function createApp(options: CreateAppOptions = {}): SprintPlannerAppConte
   const close = () => {
     if (closed) return;
     closed = true;
+    void tursoAdapter.close();
     db.close();
   };
 
-  return { app, db, close };
+  return { app, db, tursoAdapter, ready: () => initPromise, syncToTurso, close };
 }
