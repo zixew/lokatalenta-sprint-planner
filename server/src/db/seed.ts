@@ -857,118 +857,92 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
     );
 
     // ==========================================
-    // SPR-20 — ACTIVE (47 SP COMMITTED)
+    // SPR-20 — ACTIVE (128/140 SP MAXIMIZED CAPACITY)
     // ==========================================
     const spr20Created = '2027-01-10T08:00:00.000Z';
     insertSprint.run(
       'SPR-20',
       'Sprint 20 — Candidate Talent Marketplace, Profile Caching & Interactive Psychometric Simulator',
-      'Implement sub-50ms candidate profile cache and search index, Talent Marketplace recruiter directory, interactive psychometric simulation engine, and Floor 2 Boardroom 3D interview space.',
+      'Maximize sprint velocity across all 6 divisions: sub-50ms candidate profile cache, Talent Marketplace directory, psychometric simulation engine, Floor 2 Boardroom 3D interview space, and cross-device mobile PWA regression.',
       'active',
       '2027-01-10',
       '2027-01-23',
       spr20Created,
       '2027-01-10T09:00:00.000Z',
     );
-    const spr20DivCaps = buildSeedDivisionCapacities(2);
-    const spr20AgentCaps = buildSeedAgentCapacities(2);
+    const spr20DivCaps: Record<DivisionId, number> = {
+      executive: 15,
+      architecture: 20,
+      engineering: 40,
+      qa: 25,
+      devops: 25,
+      lounge: 15,
+    };
+    const spr20AgentCaps = buildSeedAgentCapacities(1);
     for (const div of CANONICAL_DIVISIONS) {
       insertDivCap.run('SPR-20', div.id, spr20DivCaps[div.id]);
     }
     for (const agent of CANONICAL_AGENTS) {
       insertAgentCap.run('SPR-20', agent.id, spr20AgentCaps[agent.id]);
     }
-    insertItem.run(
-      'SPR-20',
-      'ARC-201',
-      'In-Memory / Distributed Candidate Profile Cache & Search Index',
-      13,
-      'architecture',
-      4,
-      'in_sprint',
-      1,
-      spr20Created,
-      null,
-      spr20Created,
-    );
-    insertItem.run(
-      'SPR-20',
-      'BL-201',
-      'Candidate Talent Marketplace Directory & Filter Rails',
-      8,
-      'engineering',
-      5,
-      'in_sprint',
-      1,
-      spr20Created,
-      null,
-      spr20Created,
-    );
-    insertItem.run(
-      'SPR-20',
-      'BL-202',
-      'Interactive Psychometric Simulation Engine & Scoring Webhooks',
-      8,
-      'engineering',
-      6,
-      'in_sprint',
-      1,
-      spr20Created,
-      null,
-      spr20Created,
-    );
-    insertItem.run(
-      'SPR-20',
-      'OFC-201',
-      '3D Office Floor 2 Boardroom Interview Simulator & Holographic Avatars',
-      5,
-      'engineering',
-      9,
-      'in_sprint',
-      1,
-      spr20Created,
-      null,
-      spr20Created,
-    );
-    insertItem.run(
-      'SPR-20',
-      'QAE-201',
-      'Talent Marketplace Multi-Criteria Search & Concurrency E2E Suite',
-      8,
-      'qa',
-      8,
-      'in_sprint',
-      1,
-      spr20Created,
-      null,
-      spr20Created,
-    );
-    insertItem.run(
-      'SPR-20',
-      'REC-201',
-      'Psychometric Assessment Validity Rubric & Candidate Feedback Loop',
-      5,
-      'executive',
-      2,
-      'in_sprint',
-      1,
-      spr20Created,
-      null,
-      spr20Created,
-    );
+
+    // Architecture (18 SP committed / 20 SP capacity = 90.0%)
+    insertItem.run('SPR-20', 'ARC-201', 'In-Memory / Distributed Candidate Profile Cache & Search Index', 13, 'architecture', 4, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'ARC-202', 'Event-Driven Cache Invalidation & Event Gateway Webhook Deduplication', 5, 'architecture', 3, 'in_sprint', 1, spr20Created, null, spr20Created);
+
+    // Engineering (37 SP committed / 40 SP capacity = 92.5%)
+    insertItem.run('SPR-20', 'BL-201', 'Candidate Talent Marketplace Directory & Filter Rails', 8, 'engineering', 5, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'BL-202', 'Interactive Psychometric Simulation Engine & Scoring Webhooks', 8, 'engineering', 6, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'OFC-201', '3D Office Floor 2 Boardroom Interview Simulator & Holographic Avatars', 5, 'engineering', 9, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'BL-203', 'Real-Time Candidate Comparison Matrix & Radar Skill Visualizer', 8, 'engineering', 7, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'BL-204', 'Mobile PWA Responsive Marketplace Grid & Offline Recruiter Drawer', 8, 'engineering', 19, 'in_sprint', 1, spr20Created, null, spr20Created);
+
+    // QA (24 SP committed / 25 SP capacity = 96.0%)
+    insertItem.run('SPR-20', 'QAE-201', 'Talent Marketplace Multi-Criteria Search & Concurrency E2E Suite', 8, 'qa', 8, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'QAE-202', 'Psychometric Simulation Deterministic Scoring & Boundary Testing', 8, 'qa', 10, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'QAE-203', 'Cross-Device Mobile PWA 375px/768px/1280px+ Visual Regression Suite', 8, 'qa', 21, 'in_sprint', 1, spr20Created, null, spr20Created);
+
+    // DevOps (23 SP committed / 25 SP capacity = 92.0%)
+    insertItem.run('SPR-20', 'OFC-202', 'Distributed Redis/Memory Caching Tier Deployment & P95 Monitoring', 8, 'devops', 11, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'OFC-203', 'Edge Function Caching Layer & TLS 1.3 Latency Optimization', 8, 'devops', 16, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'FIX-201', 'Candidate PII Encryption at Rest & Secure Export Sanitization', 7, 'devops', 17, 'in_sprint', 1, spr20Created, null, spr20Created);
+
+    // Executive & Governance (13 SP committed / 15 SP capacity = 86.7%)
+    insertItem.run('SPR-20', 'REC-201', 'Psychometric Assessment Validity Rubric & Candidate Feedback Loop', 5, 'executive', 2, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'ECO-201', 'LMS Semantic Versioning v1.2.0 Release Governance & Sign-Off', 5, 'executive', 0, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'REC-202', 'Zero-Paywall Free Access & Recruiter Fair-Use Policy Audit', 3, 'executive', 1, 'in_sprint', 1, spr20Created, null, spr20Created);
+
+    // Stakeholder Lounge (13 SP committed / 15 SP capacity = 86.7%)
+    insertItem.run('SPR-20', 'REC-203', 'Candidate Experience (CX) & Post-Simulation Reflection Flow', 5, 'lounge', 22, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'REC-204', 'Recruiter Collaborative Workspace & Interview Feedback Hub', 5, 'lounge', 23, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'REC-001', 'Stakeholder Rubric & Candidate Telemetry Privacy Guardrails', 3, 'lounge', 14, 'in_sprint', 1, spr20Created, null, spr20Created);
+
     insertCeremony.run(
       'CER-SPR20-PLAN',
       'SPR-20',
       'planning',
       2,
-      'Sprint 20 Planning Ceremony convened. Scope committed: Candidate Talent Marketplace Directory, In-Memory Candidate Profile Cache & Search Index, Interactive Psychometric Simulation Engine, Floor 2 Boardroom 3D Interview Space, and Automated Concurrency E2E Test Suite. Total committed: 47 SP across 4 divisions (Architecture: 13 SP, Engineering: 21 SP, QA: 8 SP, Executive: 5 SP). Total capacity: 140 SP. Zero-drift Industrial Precision Workbench UI enforced.',
+      'Sprint 20 Planning Ceremony convened with Maximized Capacity Protocol: 128 SP committed across all 6 divisions (Engineering: 37 SP, Architecture: 18 SP, QA: 24 SP, DevOps: 23 SP, Executive: 13 SP, Lounge: 13 SP). Overall capacity utilization maximized to 91.4% with 12 SP reserve buffer. Zero-drift Industrial Precision Workbench UI enforced.',
       JSON.stringify([
         { text: 'Implement In-Memory / Distributed Candidate Profile Cache with <50ms lookup (ARC-201)', ownerAgentId: 4, done: false },
+        { text: 'Deploy Event-Driven Cache Invalidation & Event Gateway Webhook Deduplication (ARC-202)', ownerAgentId: 3, done: false },
         { text: 'Build Candidate Talent Marketplace Directory with docked filter rails and skeleton shimmer (BL-201)', ownerAgentId: 5, done: false },
         { text: 'Develop Interactive Psychometric Simulation Engine & scoring webhooks (BL-202)', ownerAgentId: 6, done: false },
         { text: 'Render Floor 2 Boardroom Interview Simulator & holographic candidate avatars in 3D Office (OFC-201)', ownerAgentId: 9, done: false },
+        { text: 'Build Real-Time Candidate Comparison Matrix & 5-axis Radar Skill Visualizer (BL-203)', ownerAgentId: 7, done: false },
+        { text: 'Develop Mobile PWA Responsive Marketplace Grid & Offline Recruiter Drawer (BL-204)', ownerAgentId: 19, done: false },
         { text: 'Execute Multi-Criteria Search & Concurrency E2E Test Suite with zero regressions (QAE-201)', ownerAgentId: 8, done: false },
+        { text: 'Validate Psychometric Simulation Deterministic Scoring & Boundary Testing (QAE-202)', ownerAgentId: 10, done: false },
+        { text: 'Run Cross-Device Mobile PWA 375px/768px/1280px+ Visual Regression Suite (QAE-203)', ownerAgentId: 21, done: false },
+        { text: 'Deploy Distributed Redis/Memory Caching Tier Deployment & P95 Monitoring (OFC-202)', ownerAgentId: 11, done: false },
+        { text: 'Configure Edge Function Caching Layer & TLS 1.3 Latency Optimization (OFC-203)', ownerAgentId: 16, done: false },
+        { text: 'Enforce Candidate PII Encryption at Rest & Secure Export Sanitization (FIX-201)', ownerAgentId: 17, done: false },
         { text: 'Publish Psychometric Assessment Validity Rubric and Ethics Charter to Docs Hub (REC-201)', ownerAgentId: 2, done: false },
+        { text: 'Conduct LMS Semantic Versioning v1.2.0 Release Governance & Sign-Off (ECO-201)', ownerAgentId: 0, done: false },
+        { text: 'Audit Zero-Paywall Free Access & Recruiter Fair-Use Policy (REC-202)', ownerAgentId: 1, done: false },
+        { text: 'Design Candidate Experience (CX) & Post-Simulation Reflection Flow (REC-203)', ownerAgentId: 22, done: false },
+        { text: 'Build Recruiter Collaborative Workspace & Interview Feedback Hub (REC-204)', ownerAgentId: 23, done: false },
+        { text: 'Enforce Stakeholder Rubric & Candidate Telemetry Privacy Guardrails (REC-001)', ownerAgentId: 14, done: false }
       ]),
       spr20Created,
       '2027-01-10T08:30:00.000Z',
