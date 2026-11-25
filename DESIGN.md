@@ -152,3 +152,18 @@
 - [ ] **State Resilience:** Verify Loading (skeleton), Empty (clear CTA), Error (amber alert banner), and Success (toast) states.
 - [ ] **Cold-Start Integrity:** Verify data persists across refresh and syncs with Event Gateway.
 - [ ] **Motion Check:** Toggle `prefers-reduced-motion` in browser emulation and confirm zero spring jumps.
+
+---
+
+## 15. Design Taste Before Pixels Protocol (Anti-Generic AI Aesthetic)
+> *"You set design taste before pixels. No generic AI aesthetic. Read the room, commit to a direction, then specify the system."* — *(via AI UX Playground)*
+
+All agents designing or modifying LokaTalenta surfaces MUST strictly execute the 5-step taste specification:
+1. **Design Read (1 line):** `"Reading this as: <page kind> for <audience>, with a <vibe> language, leaning toward <aesthetic family>."` (If ambiguous, ask exactly ONE question; otherwise do not ask).
+2. **Three Dials (1–10):**
+   - `DESIGN_VARIANCE`: Default **3 – 4** (Structured, high-precision layout).
+   - `MOTION_INTENSITY`: Default **2 – 3** (Snappy 150ms–200ms transitions, zero floaty wobble).
+   - `VISUAL_DENSITY`: Default **7 – 8** (Cockpit/workbench data density, tabular monospace numbers).
+3. **Anti-Default Lock:** Explicitly ban generic AI defaults (purple gradients, Inter+slate without identity, copy-paste 3 feature cards, excessive glassmorphism, cream fake parchment, and floating pill soup).
+4. **Taste System:** Name aesthetic (*Industrial Precision Workbench*), establish signature element (telemetry HUD strip), lock palette roles (`#F3F3F0` / `#0E1015`), enforce type hierarchy (`Plus Jakarta Sans` + `JetBrains Mono`), and define motion intent.
+5. **First-Build Checklist:** Validate tokens, establish layout structure, apply 1px borders & constrained radii, format tabular numbers, and verify WCAG 2.1 AA accessibility.
