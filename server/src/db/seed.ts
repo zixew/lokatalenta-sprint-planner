@@ -857,14 +857,15 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
     );
 
     // ==========================================
-    // SPR-20 — ACTIVE (128/140 SP MAXIMIZED CAPACITY)
+    // SPR-20 — COMPLETED (128/140 SP DONE — LMS v1.2.0 RELEASED)
     // ==========================================
     const spr20Created = '2027-01-10T08:00:00.000Z';
+    const spr20Closed = '2027-01-23T18:00:00.000Z';
     insertSprint.run(
       'SPR-20',
       'Sprint 20 — Candidate Talent Marketplace, Profile Caching & Interactive Psychometric Simulator',
       'Maximize sprint velocity across all 6 divisions: sub-50ms candidate profile cache, Talent Marketplace directory, psychometric simulation engine, Floor 2 Boardroom 3D interview space, and cross-device mobile PWA regression.',
-      'active',
+      'completed',
       '2027-01-10',
       '2027-01-23',
       spr20Created,
@@ -887,35 +888,35 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
     }
 
     // Architecture (18 SP committed / 20 SP capacity = 90.0%)
-    insertItem.run('SPR-20', 'ARC-201', 'In-Memory / Distributed Candidate Profile Cache & Search Index', 13, 'architecture', 4, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'ARC-202', 'Event-Driven Cache Invalidation & Event Gateway Webhook Deduplication', 5, 'architecture', 3, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'ARC-201', 'In-Memory / Distributed Candidate Profile Cache & Search Index', 13, 'architecture', 4, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'ARC-202', 'Event-Driven Cache Invalidation & Event Gateway Webhook Deduplication', 5, 'architecture', 3, 'done', 1, spr20Created, spr20Closed, spr20Created);
 
     // Engineering (37 SP committed / 40 SP capacity = 92.5%)
-    insertItem.run('SPR-20', 'BL-201', 'Candidate Talent Marketplace Directory & Filter Rails', 8, 'engineering', 5, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'BL-202', 'Interactive Psychometric Simulation Engine & Scoring Webhooks', 8, 'engineering', 6, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'OFC-201', '3D Office Floor 2 Boardroom Interview Simulator & Holographic Avatars', 5, 'engineering', 9, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'BL-203', 'Real-Time Candidate Comparison Matrix & Radar Skill Visualizer', 8, 'engineering', 7, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'BL-204', 'Mobile PWA Responsive Marketplace Grid & Offline Recruiter Drawer', 8, 'engineering', 19, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'BL-201', 'Candidate Talent Marketplace Directory & Filter Rails', 8, 'engineering', 5, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'BL-202', 'Interactive Psychometric Simulation Engine & Scoring Webhooks', 8, 'engineering', 6, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'OFC-201', '3D Office Floor 2 Boardroom Interview Simulator & Holographic Avatars', 5, 'engineering', 9, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'BL-203', 'Real-Time Candidate Comparison Matrix & Radar Skill Visualizer', 8, 'engineering', 7, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'BL-204', 'Mobile PWA Responsive Marketplace Grid & Offline Recruiter Drawer', 8, 'engineering', 19, 'done', 1, spr20Created, spr20Closed, spr20Created);
 
     // QA (24 SP committed / 25 SP capacity = 96.0%)
-    insertItem.run('SPR-20', 'QAE-201', 'Talent Marketplace Multi-Criteria Search & Concurrency E2E Suite', 8, 'qa', 8, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'QAE-202', 'Psychometric Simulation Deterministic Scoring & Boundary Testing', 8, 'qa', 10, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'QAE-203', 'Cross-Device Mobile PWA 375px/768px/1280px+ Visual Regression Suite', 8, 'qa', 21, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'QAE-201', 'Talent Marketplace Multi-Criteria Search & Concurrency E2E Suite', 8, 'qa', 8, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'QAE-202', 'Psychometric Simulation Deterministic Scoring & Boundary Testing', 8, 'qa', 10, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'QAE-203', 'Cross-Device Mobile PWA 375px/768px/1280px+ Visual Regression Suite', 8, 'qa', 21, 'done', 1, spr20Created, spr20Closed, spr20Created);
 
     // DevOps (23 SP committed / 25 SP capacity = 92.0%)
-    insertItem.run('SPR-20', 'OFC-202', 'Distributed Redis/Memory Caching Tier Deployment & P95 Monitoring', 8, 'devops', 11, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'OFC-203', 'Edge Function Caching Layer & TLS 1.3 Latency Optimization', 8, 'devops', 16, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'FIX-201', 'Candidate PII Encryption at Rest & Secure Export Sanitization', 7, 'devops', 17, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'OFC-202', 'Distributed Redis/Memory Caching Tier Deployment & P95 Monitoring', 8, 'devops', 11, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'OFC-203', 'Edge Function Caching Layer & TLS 1.3 Latency Optimization', 8, 'devops', 16, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'FIX-201', 'Candidate PII Encryption at Rest & Secure Export Sanitization', 7, 'devops', 17, 'done', 1, spr20Created, spr20Closed, spr20Created);
 
     // Executive & Governance (13 SP committed / 15 SP capacity = 86.7%)
-    insertItem.run('SPR-20', 'REC-201', 'Psychometric Assessment Validity Rubric & Candidate Feedback Loop', 5, 'executive', 2, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'ECO-201', 'LMS Semantic Versioning v1.2.0 Release Governance & Sign-Off', 5, 'executive', 0, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'REC-202', 'Zero-Paywall Free Access & Recruiter Fair-Use Policy Audit', 3, 'executive', 1, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'REC-201', 'Psychometric Assessment Validity Rubric & Candidate Feedback Loop', 5, 'executive', 2, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'ECO-201', 'LMS Semantic Versioning v1.2.0 Release Governance & Sign-Off', 5, 'executive', 0, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'REC-202', 'Zero-Paywall Free Access & Recruiter Fair-Use Policy Audit', 3, 'executive', 1, 'done', 1, spr20Created, spr20Closed, spr20Created);
 
     // Stakeholder Lounge (13 SP committed / 15 SP capacity = 86.7%)
-    insertItem.run('SPR-20', 'REC-203', 'Candidate Experience (CX) & Post-Simulation Reflection Flow', 5, 'lounge', 22, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'REC-204', 'Recruiter Collaborative Workspace & Interview Feedback Hub', 5, 'lounge', 23, 'in_sprint', 1, spr20Created, null, spr20Created);
-    insertItem.run('SPR-20', 'REC-001', 'Stakeholder Rubric & Candidate Telemetry Privacy Guardrails', 3, 'lounge', 14, 'in_sprint', 1, spr20Created, null, spr20Created);
+    insertItem.run('SPR-20', 'REC-203', 'Candidate Experience (CX) & Post-Simulation Reflection Flow', 5, 'lounge', 22, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'REC-204', 'Recruiter Collaborative Workspace & Interview Feedback Hub', 5, 'lounge', 23, 'done', 1, spr20Created, spr20Closed, spr20Created);
+    insertItem.run('SPR-20', 'REC-001', 'Stakeholder Rubric & Candidate Telemetry Privacy Guardrails', 3, 'lounge', 14, 'done', 1, spr20Created, spr20Closed, spr20Created);
 
     insertCeremony.run(
       'CER-SPR20-PLAN',
@@ -946,6 +947,133 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       ]),
       spr20Created,
       '2027-01-10T08:30:00.000Z',
+    );
+
+    insertCeremony.run(
+      'CER-SPR20-REV',
+      'SPR-20',
+      'review',
+      0,
+      'Sprint 20 Review: 100% of committed deliverables accepted (128 SP across 17 items). Candidate Talent Marketplace directory with filter rails, sub-50ms in-memory cache, interactive psychometric simulator, 3D Office Floor 2 Holographic Dais & 60 FPS performance optimizations demoed and signed off. LokaTalenta LMS v1.2.0 officially released with zero paywalls.',
+      JSON.stringify([
+        { text: 'Verify Talent Marketplace sub-50ms query response time in production', ownerAgentId: 4, done: true },
+        { text: 'Audit psychometric simulation scoring webhooks and event gateway stream', ownerAgentId: 6, done: true },
+        { text: 'Validate 3D Office Floor 2 Boardroom Holographic Dais and 60 FPS performance boost', ownerAgentId: 9, done: true },
+        { text: 'Confirm zero-paywall compliance across all marketplace and assessment routes', ownerAgentId: 1, done: true },
+        { text: 'Formal sign-off on LMS SemVer v1.2.0 release charter', ownerAgentId: 0, done: true }
+      ]),
+      spr20Closed,
+      '2027-01-23T15:00:00.000Z',
+    );
+
+    insertCeremony.run(
+      'CER-SPR20-RETRO',
+      'SPR-20',
+      'retrospective',
+      1,
+      'Sprint 20 Retrospective: 91.4% capacity utilization achieved with zero team burnout. What went well: High cross-division velocity, seamless 3D performance optimization to 60 FPS, robust test coverage (21/21 passing). What to improve: The web LMS client still carries legacy AI-generated visual slop (nested cards, gradient text, inconsistent tokens, weak contrast). Action item: Dedicate Sprint 21 to a comprehensive ecosystem-wide Anti-Slop UI Revamp elevating LokaTalenta LMS to v2.0.0 (Major Release).',
+      JSON.stringify([
+        { text: 'Acknowledge 91.4% maximized capacity and zero blocker sprint closure', ownerAgentId: 1, done: true },
+        { text: 'Formulate Industrial Precision Workbench tokens for LMS client revamp', ownerAgentId: 4, done: true },
+        { text: 'Target LokaTalenta LMS Major Release v2.0.0 for next sprint', ownerAgentId: 0, done: true },
+        { text: 'Schedule Sprint 21 Planning with 93.8% maximized capacity commitment', ownerAgentId: 2, done: true }
+      ]),
+      spr20Closed,
+      '2027-01-23T16:30:00.000Z',
+    );
+
+    // ==========================================
+    // SPR-21 — ACTIVE (136/145 SP MAXIMIZED CAPACITY — LMS v2.0.0 MAJOR REVAMP)
+    // ==========================================
+    const spr21Created = '2027-01-24T08:00:00.000Z';
+    insertSprint.run(
+      'SPR-21',
+      'Sprint 21 — LokaTalenta LMS Major Anti-Slop UI Revamp (v2.0.0)',
+      'Total elimination of generic AI slop across LokaTalenta LMS: implement Industrial Precision Workbench design tokens, purpose-gated component rails, distraction-free test deck, WCAG 2.1 AA accessibility, and real-time telemetry syncing.',
+      'active',
+      '2027-01-24',
+      '2027-02-06',
+      spr21Created,
+      '2027-01-24T09:00:00.000Z',
+    );
+    const spr21DivCaps: Record<DivisionId, number> = {
+      executive: 15,
+      architecture: 20,
+      engineering: 45,
+      qa: 25,
+      devops: 25,
+      lounge: 15,
+    };
+    const spr21AgentCaps = buildSeedAgentCapacities(1);
+    for (const div of CANONICAL_DIVISIONS) {
+      insertDivCap.run('SPR-21', div.id, spr21DivCaps[div.id]);
+    }
+    for (const agent of CANONICAL_AGENTS) {
+      insertAgentCap.run('SPR-21', agent.id, spr21AgentCaps[agent.id]);
+    }
+
+    // Architecture (19 SP committed / 20 SP capacity = 95.0%)
+    insertItem.run('SPR-21', 'ARC-211', 'LMS Semantic Token Engine & Hexagonal Theme Contract Architecture', 13, 'architecture', 4, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'ARC-212', 'Real-Time Telemetry & SSE State Synchronization Contract (LMS ↔ 3D Office)', 6, 'architecture', 3, 'in_sprint', 1, spr21Created, null, spr21Created);
+
+    // Engineering (42 SP committed / 45 SP capacity = 93.3%)
+    insertItem.run('SPR-21', 'BL-211', 'Student Learning Portal & Course Dashboard Anti-Slop UI Revamp', 8, 'engineering', 5, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'BL-212', 'Psychometric Assessment & Quiz-Runner Industrial Workbench Interface', 8, 'engineering', 6, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'BL-213', 'Teacher & Instructor Course Studio Refactor', 8, 'engineering', 7, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'BL-214', 'Recruiter & Talent Marketplace Workspace Anti-Slop Facelift', 8, 'engineering', 19, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'BL-215', 'LMS Client Motion Engine & Micro-Interactions (Spring Tokens & Zero-Slop Physics)', 5, 'engineering', 9, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'BL-216', 'Kraepelin & Typing Assessment Ergonomic Workbench Refresh', 5, 'engineering', 18, 'in_sprint', 1, spr21Created, null, spr21Created);
+
+    // QA (24 SP committed / 25 SP capacity = 96.0%)
+    insertItem.run('SPR-21', 'QAE-211', 'Anti-Slop Visual Regression & Multi-Viewport Audit Suite (375px/768px/1280px+)', 8, 'qa', 8, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'QAE-212', 'WCAG 2.1 AA Contrast, Color-Blindness & Focus Flow Verification', 8, 'qa', 10, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'QAE-213', 'Cross-Browser CSS Engine & Mobile Device Matrix Testing', 8, 'qa', 21, 'in_sprint', 1, spr21Created, null, spr21Created);
+
+    // DevOps (23 SP committed / 25 SP capacity = 92.0%)
+    insertItem.run('SPR-21', 'OFC-211', 'LMS Production Asset Optimization, Brotli Compression & Sub-100ms FCP', 8, 'devops', 11, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'OFC-212', 'LMS Edge Caching & Realtime SSE Gateway Pipeline', 8, 'devops', 16, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'FIX-211', 'Zero-Vulnerability CSP Headers & Strict Dependency Audit', 7, 'devops', 17, 'in_sprint', 1, spr21Created, null, spr21Created);
+
+    // Executive & Governance (14 SP committed / 15 SP capacity = 93.3%)
+    insertItem.run('SPR-21', 'ECO-211', 'LMS Semantic Versioning v2.0.0 Major Release Protocol & Release Governance', 6, 'executive', 0, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'REC-211', 'Anti-Slop Copywriting & Plain Language UX Content Audit', 5, 'executive', 2, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'REC-212', '100% Zero-Paywall Ethical Governance & Community Accessibility Review', 3, 'executive', 1, 'in_sprint', 1, spr21Created, null, spr21Created);
+
+    // Stakeholder Lounge (14 SP committed / 15 SP capacity = 93.3%)
+    insertItem.run('SPR-21', 'REC-213', 'Candidate Ergonomic & Cognitive Comfort Evaluation', 6, 'lounge', 22, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'REC-214', 'Community Discussion & Cohort Collaboration Hub Design', 5, 'lounge', 23, 'in_sprint', 1, spr21Created, null, spr21Created);
+    insertItem.run('SPR-21', 'REC-215', 'Design Ethics & Anti-Dark Pattern Compliance Review', 3, 'lounge', 14, 'in_sprint', 1, spr21Created, null, spr21Created);
+
+    insertCeremony.run(
+      'CER-SPR21-PLAN',
+      'SPR-21',
+      'planning',
+      2,
+      'Sprint 21 Planning Ceremony convened with Maximized Capacity Protocol: 136 SP committed across all 6 divisions (Engineering: 42 SP, Architecture: 19 SP, QA: 24 SP, DevOps: 23 SP, Executive: 14 SP, Lounge: 14 SP). Overall capacity utilization maximized to 93.8% with 9 SP reserve buffer. Core Focus: Major Anti-Slop UI Revamp elevating LokaTalenta LMS to v2.0.0.',
+      JSON.stringify([
+        { text: 'Develop LMS Semantic Token Engine & Hexagonal Theme Contract Architecture (ARC-211)', ownerAgentId: 4, done: false },
+        { text: 'Establish Real-Time Telemetry & SSE State Synchronization Contract (ARC-212)', ownerAgentId: 3, done: false },
+        { text: 'Revamp Student Learning Portal & Course Dashboard Anti-Slop UI (BL-211)', ownerAgentId: 5, done: false },
+        { text: 'Redesign Psychometric Assessment & Quiz-Runner to Industrial Workbench (BL-212)', ownerAgentId: 6, done: false },
+        { text: 'Refactor Teacher & Instructor Course Studio (BL-213)', ownerAgentId: 7, done: false },
+        { text: 'Upgrade Recruiter & Talent Marketplace Workspace Anti-Slop Facelift (BL-214)', ownerAgentId: 19, done: false },
+        { text: 'Build LMS Client Motion Engine with zero-slop spring physics (BL-215)', ownerAgentId: 9, done: false },
+        { text: 'Refresh Kraepelin & Typing Assessment Ergonomic Workbench (BL-216)', ownerAgentId: 18, done: false },
+        { text: 'Execute Anti-Slop Visual Regression & Multi-Viewport Audit Suite (QAE-211)', ownerAgentId: 8, done: false },
+        { text: 'Verify WCAG 2.1 AA Contrast, Color-Blindness & Focus Flow (QAE-212)', ownerAgentId: 10, done: false },
+        { text: 'Conduct Cross-Browser CSS Engine & Mobile Device Matrix Testing (QAE-213)', ownerAgentId: 21, done: false },
+        { text: 'Optimize LMS Production Assets, Brotli Compression & Sub-100ms FCP (OFC-211)', ownerAgentId: 11, done: false },
+        { text: 'Deploy LMS Edge Caching & Realtime SSE Gateway Pipeline (OFC-212)', ownerAgentId: 16, done: false },
+        { text: 'Harden Zero-Vulnerability CSP Headers & Strict Dependency Audit (FIX-211)', ownerAgentId: 17, done: false },
+        { text: 'Publish LMS Semantic Versioning v2.0.0 Major Release Protocol & Charter (ECO-211)', ownerAgentId: 0, done: false },
+        { text: 'Perform Anti-Slop Copywriting & Plain Language UX Content Audit (REC-211)', ownerAgentId: 2, done: false },
+        { text: 'Verify 100% Zero-Paywall Ethical Governance & Community Accessibility (REC-212)', ownerAgentId: 1, done: false },
+        { text: 'Conduct Candidate Ergonomic & Cognitive Comfort Evaluation (REC-213)', ownerAgentId: 22, done: false },
+        { text: 'Streamline Community Discussion & Cohort Collaboration Hub Design (REC-214)', ownerAgentId: 23, done: false },
+        { text: 'Enforce Design Ethics & Anti-Dark Pattern Compliance Review (REC-215)', ownerAgentId: 14, done: false }
+      ]),
+      spr21Created,
+      '2027-01-24T08:30:00.000Z',
     );
   });
 
