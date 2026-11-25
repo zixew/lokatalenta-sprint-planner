@@ -225,7 +225,7 @@ export function CeremoniesPanel({
                             prev.map((a, i) => (i === idx ? { ...a, done: !a.done } : a)),
                           )
                         }
-                        className="flex items-center gap-2 text-left cursor-pointer"
+                        className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-left cursor-pointer"
                       >
                         {item.done ? (
                           <CheckSquare className="h-3.5 w-3.5 text-[#0F766E] dark:text-teal-400" />

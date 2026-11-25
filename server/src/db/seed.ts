@@ -18,12 +18,12 @@ function buildSeedAgentCapacities(multiplier: number): Record<number, number> {
   for (const agent of CANONICAL_AGENTS) {
     const base =
       agent.divisionId === 'engineering'
-        ? 7
+        ? 10
         : agent.divisionId === 'qa' || agent.divisionId === 'architecture'
-          ? 6
+          ? 9
           : agent.divisionId === 'devops'
-            ? 5
-            : 4;
+            ? 7
+            : 6;
     result[agent.id] = Math.round(base * multiplier);
   }
   return result;

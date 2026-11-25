@@ -170,7 +170,7 @@ export function SprintHeaderBar({
                 {healthOpen && (
                   <div
                     data-testid="sprint-health-popover"
-                    className="absolute left-0 top-full z-40 mt-2 w-72 rounded-xl border border-[#E5E3DC] bg-white p-3.5 text-xs shadow-xl dark:border-zinc-700 dark:bg-[#161B22]"
+                    className="absolute left-0 top-full z-40 mt-2 w-72 max-w-[calc(100vw-3rem)] rounded-xl border border-[#E5E3DC] bg-white p-3.5 text-xs shadow-xl dark:border-zinc-700 dark:bg-[#161B22]"
                   >
                     <div className="mb-2 border-b border-[#E5E3DC] pb-2 font-bold text-zinc-900 dark:border-zinc-800 dark:text-slate-100">
                       Sprint Readiness Checklist

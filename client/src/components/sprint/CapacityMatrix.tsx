@@ -351,7 +351,7 @@ function CapacityMatrixInner({
                   <button
                     type="button"
                     onClick={() => toggleDivision(division.id)}
-                    className="flex items-center gap-2 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] rounded"
+                    className="flex min-w-0 flex-1 items-center gap-2 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] rounded"
                   >
                     {isExpanded ? (
                       <ChevronDown className="h-4 w-4 text-[#52525B]" aria-hidden="true" />

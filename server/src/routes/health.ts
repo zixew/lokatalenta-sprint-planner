@@ -15,6 +15,7 @@ export function createHealthRouter(options: {
       port: options.port,
       backlogApiUrl: options.backlogApiUrl,
       eventGatewayUrl: options.eventGatewayUrl,
+      persistence: process.env.VERCEL === '1' ? 'ephemeral-tmp-seeded' : 'local-sqlite',
       timestamp: new Date().toISOString(),
     });
   });

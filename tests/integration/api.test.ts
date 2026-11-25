@@ -65,10 +65,12 @@ describe('Sprint Planner REST API & Integrations', () => {
       ok: boolean;
       service: string;
       backlogApiUrl: string;
+      persistence: string;
     };
     expect(health.ok).toBe(true);
     expect(health.service).toBe('lokatalenta-sprint-planner');
     expect(health.backlogApiUrl).toBe(backlog.url);
+    expect(health.persistence).toBe('local-sqlite');
 
     const contractsRes = await fetch(`${server.baseUrl}/api/contracts`);
     expect(contractsRes.status).toBe(200);
@@ -474,6 +476,39 @@ describe('Sprint Planner REST API & Integrations', () => {
       else process.env.DB_PATH = prevDbPath;
       if (prevGatewayUrl === undefined) delete process.env.EVENT_GATEWAY_URL;
       else process.env.EVENT_GATEWAY_URL = prevGatewayUrl;
+    }
+  });
+
+  it('seeds SPR-15 and SPR-16 with zero overallocated divisions or agents', async () => {
+    const server = await startAppServer({ dbPath: ':memory:', seed: true });
+    cleanups.push(server.close);
+
+    const res = await fetch(`${server.baseUrl}/api/sprints`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      sprints: Array<{
+        id: string;
+        divisionCapacities: Record<string, number>;
+        agentCapacities: Record<string, number>;
+        items: Array<{ ownerDivision: string; ownerAgentId: number | null; storyPoints: number }>;
+      }>;
+    };
+
+    for (const sprintId of ['SPR-15', 'SPR-16']) {
+      const sprint = body.sprints.find((s) => s.id === sprintId);
+      expect(sprint).toBeDefined();
+      for (const [divId, cap] of Object.entries(sprint!.divisionCapacities)) {
+        const load = sprint!.items
+          .filter((i) => i.ownerDivision === divId)
+          .reduce((sum, i) => sum + i.storyPoints, 0);
+        expect(load).toBeLessThanOrEqual(cap);
+      }
+      for (const [agentId, cap] of Object.entries(sprint!.agentCapacities)) {
+        const load = sprint!.items
+          .filter((i) => i.ownerAgentId === Number(agentId))
+          .reduce((sum, i) => sum + i.storyPoints, 0);
+        expect(load).toBeLessThanOrEqual(cap);
+      }
     }
   });
 });
