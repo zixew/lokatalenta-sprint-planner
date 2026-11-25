@@ -202,14 +202,14 @@ export function BacklogDrawer({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex justify-end bg-black/45"
+      className="fixed inset-0 z-50 flex justify-end bg-black/25 backdrop-blur-[4px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="backlog-drawer-title"
       data-testid="backlog-drawer"
     >
-      <div className="flex h-full w-full max-w-xl flex-col border-l border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22]">
-        <div className="flex items-center justify-between border-b border-[#E5E3DC] dark:border-zinc-800 px-5 py-4">
+      <div className="transition-drawer-enter flex h-full w-full max-w-xl flex-col border-l border-[#D4D4CE] dark:border-zinc-800 bg-white dark:bg-[#161B24]">
+        <div className="flex items-center justify-between border-b border-[#D4D4CE] dark:border-zinc-800 px-5 py-4">
           <div>
             <h2
               id="backlog-drawer-title"
@@ -397,6 +397,7 @@ export function BacklogDrawer({
                       <Button
                         variant="primary"
                         size="sm"
+                        className="transition-subtle active:scale-[0.97]"
                         data-testid={`assign-candidate-${item.id}`}
                         onClick={() => void handleAssignCandidate(item)}
                         disabled={assigningId === item.id}
@@ -413,7 +414,7 @@ export function BacklogDrawer({
           <form
             data-testid="manual-assign-form"
             onSubmit={handleManualSubmit}
-            className="rounded-xl border border-[#E5E3DC] dark:border-zinc-800 bg-[#F6F5F1] dark:bg-[#0D1117] p-4 space-y-3"
+            className="rounded-xl border border-[#D4D4CE] dark:border-zinc-800 bg-[#F3F3F0] dark:bg-[#0E1015] p-4 space-y-3"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-bold uppercase tracking-wide text-[#52525B] dark:text-slate-300">

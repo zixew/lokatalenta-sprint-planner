@@ -260,15 +260,31 @@ export function App() {
         />
 
         {loading ? (
-          <div className="rounded-xl border border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22] p-10 text-center text-sm text-[#52525B] dark:text-slate-400">
-            Loading sprints and division capacities...
+          <div
+            aria-busy="true"
+            aria-label="Loading sprint data"
+            className="space-y-4"
+          >
+            <div className="h-10 w-80 rounded-lg bg-[#EAEAE4] dark:bg-zinc-800/70 animate-pulse" />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2, 3, 4, 5].map((n) => (
+                <div
+                  key={n}
+                  className="h-32 rounded-lg border border-[#D4D4CE] dark:border-zinc-800 bg-white dark:bg-[#161B24] p-4 space-y-2.5 animate-pulse"
+                >
+                  <div className="h-4 w-1/2 rounded bg-[#EAEAE4] dark:bg-zinc-800" />
+                  <div className="h-3 w-3/4 rounded bg-[#EAEAE4] dark:bg-zinc-800" />
+                  <div className="h-2 w-full rounded bg-[#EAEAE4] dark:bg-zinc-800 mt-4" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : !selectedSprint ? (
           <div
             data-testid="empty-sprints-state"
-            className="rounded-xl border border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22] p-10 text-center"
+            className="rounded-xl border border-[#D4D4CE] dark:border-zinc-800 bg-white dark:bg-[#161B24] p-10 text-center"
           >
-            <h2 className="text-lg font-bold text-[#18181B] dark:text-slate-100">
+            <h2 className="text-lg font-bold text-[#0E1015] dark:text-slate-100">
               No Sprints Created Yet
             </h2>
             <p className="mt-1.5 text-sm text-[#52525B] dark:text-slate-400">
@@ -286,59 +302,61 @@ export function App() {
           </div>
         ) : (
           <>
-            <div
-              data-testid="planner-tabs"
-              role="tablist"
-              aria-label="Sprint Planner Views"
-              className="flex flex-wrap items-center gap-2 border-b border-[#E5E3DC] dark:border-zinc-800 pb-3"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'capacity'}
-                data-testid="tab-capacity"
-                onClick={() => setActiveTab('capacity')}
-                className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] ${
-                  activeTab === 'capacity'
-                    ? 'bg-teal-50 dark:bg-teal-950/60 text-[#0F766E] dark:text-teal-400 border border-teal-200 dark:border-teal-800'
-                    : 'bg-white dark:bg-[#161B22] text-[#52525B] dark:text-slate-300 border border-[#E5E3DC] dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-                }`}
+            <div className="border-b border-[#D4D4CE] dark:border-zinc-800 pb-3">
+              <div
+                data-testid="planner-tabs"
+                role="tablist"
+                aria-label="Sprint Planner Views"
+                className="inline-flex flex-wrap items-center rounded-lg border border-[#D4D4CE] dark:border-zinc-800 bg-[#EAEAE4] dark:bg-[#11141C] p-0.5 gap-0.5"
               >
-                <Layers className="h-3.5 w-3.5" aria-hidden="true" />
-                Capacity &amp; Sprint Scope
-              </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'capacity'}
+                  data-testid="tab-capacity"
+                  onClick={() => setActiveTab('capacity')}
+                  className={`inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-xs font-semibold transition-subtle cursor-pointer min-h-[38px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] ${
+                    activeTab === 'capacity'
+                      ? 'bg-white dark:bg-[#161B24] text-[#0E1015] dark:text-slate-100 shadow-xs'
+                      : 'text-[#52525B] dark:text-slate-400 hover:text-[#0E1015] dark:hover:text-slate-200'
+                  }`}
+                >
+                  <Layers className="h-3.5 w-3.5" aria-hidden="true" />
+                  Capacity &amp; Sprint Scope
+                </button>
 
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'analytics'}
-                data-testid="tab-analytics"
-                onClick={() => setActiveTab('analytics')}
-                className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] ${
-                  activeTab === 'analytics'
-                    ? 'bg-teal-50 dark:bg-teal-950/60 text-[#0F766E] dark:text-teal-400 border border-teal-200 dark:border-teal-800'
-                    : 'bg-white dark:bg-[#161B22] text-[#52525B] dark:text-slate-300 border border-[#E5E3DC] dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-                }`}
-              >
-                <BarChart3 className="h-3.5 w-3.5" aria-hidden="true" />
-                Velocity &amp; Burndown
-              </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'analytics'}
+                  data-testid="tab-analytics"
+                  onClick={() => setActiveTab('analytics')}
+                  className={`inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-xs font-semibold transition-subtle cursor-pointer min-h-[38px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] ${
+                    activeTab === 'analytics'
+                      ? 'bg-white dark:bg-[#161B24] text-[#0E1015] dark:text-slate-100 shadow-xs'
+                      : 'text-[#52525B] dark:text-slate-400 hover:text-[#0E1015] dark:hover:text-slate-200'
+                  }`}
+                >
+                  <BarChart3 className="h-3.5 w-3.5" aria-hidden="true" />
+                  Velocity &amp; Burndown
+                </button>
 
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'ceremonies'}
-                data-testid="tab-ceremonies"
-                onClick={() => setActiveTab('ceremonies')}
-                className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] ${
-                  activeTab === 'ceremonies'
-                    ? 'bg-teal-50 dark:bg-teal-950/60 text-[#0F766E] dark:text-teal-400 border border-teal-200 dark:border-teal-800'
-                    : 'bg-white dark:bg-[#161B22] text-[#52525B] dark:text-slate-300 border border-[#E5E3DC] dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-                }`}
-              >
-                <MessageSquareText className="h-3.5 w-3.5" aria-hidden="true" />
-                Ceremony Notes
-              </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'ceremonies'}
+                  data-testid="tab-ceremonies"
+                  onClick={() => setActiveTab('ceremonies')}
+                  className={`inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-xs font-semibold transition-subtle cursor-pointer min-h-[38px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] ${
+                    activeTab === 'ceremonies'
+                      ? 'bg-white dark:bg-[#161B24] text-[#0E1015] dark:text-slate-100 shadow-xs'
+                      : 'text-[#52525B] dark:text-slate-400 hover:text-[#0E1015] dark:hover:text-slate-200'
+                  }`}
+                >
+                  <MessageSquareText className="h-3.5 w-3.5" aria-hidden="true" />
+                  Ceremony Notes
+                </button>
+              </div>
             </div>
 
             {activeTab === 'capacity' && (
