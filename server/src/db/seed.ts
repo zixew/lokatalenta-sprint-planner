@@ -711,18 +711,19 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
     );
 
     // ==========================================
-    // SPR-19 — ACTIVE (47 SP COMMITTED)
+    // SPR-19 — COMPLETED (47/47 SP DONE)
     // ==========================================
     const spr19Created = '2026-12-27T08:00:00.000Z';
+    const spr19Closed = '2027-01-09T18:00:00.000Z';
     insertSprint.run(
       'SPR-19',
       'Sprint 19 — AI Candidate Evaluation Pipelines & High-Throughput Matching',
       'Implement decoupled asynchronous AI evaluation scoring pipeline, automated multi-criteria rubrics, 3D Office AI Lab telemetry visualizer, and candidate batch ingestion with ethical governance.',
-      'active',
+      'completed',
       '2026-12-27',
       '2027-01-09',
       spr19Created,
-      '2026-12-27T09:00:00.000Z',
+      spr19Closed,
     );
     const spr19DivCaps = buildSeedDivisionCapacities(1);
     const spr19AgentCaps = buildSeedAgentCapacities(1);
@@ -739,11 +740,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       13,
       'architecture',
       4,
-      'in_sprint',
+      'done',
       1,
       spr19Created,
-      null,
-      spr19Created,
+      spr19Closed,
+      spr19Closed,
     );
     insertItem.run(
       'SPR-19',
@@ -752,11 +753,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       5,
-      'in_sprint',
+      'done',
       1,
       spr19Created,
-      null,
-      spr19Created,
+      spr19Closed,
+      spr19Closed,
     );
     insertItem.run(
       'SPR-19',
@@ -765,11 +766,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       6,
-      'in_sprint',
+      'done',
       1,
       spr19Created,
-      null,
-      spr19Created,
+      spr19Closed,
+      spr19Closed,
     );
     insertItem.run(
       'SPR-19',
@@ -778,11 +779,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'engineering',
       9,
-      'in_sprint',
+      'done',
       1,
       spr19Created,
-      null,
-      spr19Created,
+      spr19Closed,
+      spr19Closed,
     );
     insertItem.run(
       'SPR-19',
@@ -791,11 +792,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'qa',
       8,
-      'in_sprint',
+      'done',
       1,
       spr19Created,
-      null,
-      spr19Created,
+      spr19Closed,
+      spr19Closed,
     );
     insertItem.run(
       'SPR-19',
@@ -804,11 +805,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'executive',
       2,
-      'in_sprint',
+      'done',
       1,
       spr19Created,
-      null,
-      spr19Created,
+      spr19Closed,
+      spr19Closed,
     );
     insertCeremony.run(
       'CER-SPR19-PLAN',
@@ -817,15 +818,160 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       2,
       'Sprint 19 committed for AI Evaluation Pipeline Engine (ARC-191), Automated Multi-Criteria Rubrics (BL-191), Batch Ingestion API (BL-192), 3D Office AI Lab HUD (OFC-191), E2E Assessment Test Suite (QAE-191), and Ethical Rubric Charter (REC-191). Total 47 SP committed.',
       JSON.stringify([
-        { text: 'Design asynchronous candidate scoring worker queue (ARC-191)', ownerAgentId: 4, done: false },
-        { text: 'Build interactive rubric evaluator and match UI (BL-191)', ownerAgentId: 5, done: false },
-        { text: 'Implement candidate batch CSV ingestion endpoint (BL-192)', ownerAgentId: 6, done: false },
-        { text: 'Harmonize Floor 3 AI Lab visualization with real-time scoring activity (OFC-191)', ownerAgentId: 9, done: false },
-        { text: 'Execute AI assessment determinism and stress test suite (QAE-191)', ownerAgentId: 8, done: false },
-        { text: 'Publish ethical AI evaluation charter to Docs Hub (REC-191)', ownerAgentId: 2, done: false },
+        { text: 'Design asynchronous candidate scoring worker queue (ARC-191)', ownerAgentId: 4, done: true },
+        { text: 'Build interactive rubric evaluator and match UI (BL-191)', ownerAgentId: 5, done: true },
+        { text: 'Implement candidate batch CSV ingestion endpoint (BL-192)', ownerAgentId: 6, done: true },
+        { text: 'Harmonize Floor 3 AI Lab visualization with real-time scoring activity (OFC-191)', ownerAgentId: 9, done: true },
+        { text: 'Execute AI assessment determinism and stress test suite (QAE-191)', ownerAgentId: 8, done: true },
+        { text: 'Publish ethical AI evaluation charter to Docs Hub (REC-191)', ownerAgentId: 2, done: true },
       ]),
       spr19Created,
       '2026-12-27T08:30:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR19-REV',
+      'SPR-19',
+      'review',
+      0,
+      'Sprint 19 Review completed with 100% acceptance of AI evaluation pipeline, asynchronous candidate scoring, 3D Office telemetry, and ethical rubric charter. All 47 SP accepted without defects.',
+      JSON.stringify([
+        { text: 'Demo candidate scoring worker and CSV batch processing to stakeholders', ownerAgentId: 6, done: true },
+        { text: 'Verify Floor 3 AI lab HUD telemetry streaming live events', ownerAgentId: 9, done: true },
+        { text: 'Validate ethical rubric compliance on Docs Hub', ownerAgentId: 12, done: true },
+      ]),
+      spr19Closed,
+      spr19Closed,
+    );
+    insertCeremony.run(
+      'CER-SPR19-RETRO',
+      'SPR-19',
+      'retrospective',
+      2,
+      'Sprint 19 Retrospective reflected outstanding cross-division coordination across Architecture, Engineering, QA, and Executive. Zero telemetry regressions and sub-50ms latency achieved.',
+      JSON.stringify([
+        { text: 'Automate candidate profile search indexing for Sprint 20', ownerAgentId: 4, done: false },
+        { text: 'Refine psychometric simulation webhooks to maintain sub-100ms response', ownerAgentId: 6, done: false },
+      ]),
+      spr19Closed,
+      spr19Closed,
+    );
+
+    // ==========================================
+    // SPR-20 — ACTIVE (47 SP COMMITTED)
+    // ==========================================
+    const spr20Created = '2027-01-10T08:00:00.000Z';
+    insertSprint.run(
+      'SPR-20',
+      'Sprint 20 — Candidate Talent Marketplace, Profile Caching & Interactive Psychometric Simulator',
+      'Implement sub-50ms candidate profile cache and search index, Talent Marketplace recruiter directory, interactive psychometric simulation engine, and Floor 2 Boardroom 3D interview space.',
+      'active',
+      '2027-01-10',
+      '2027-01-23',
+      spr20Created,
+      '2027-01-10T09:00:00.000Z',
+    );
+    const spr20DivCaps = buildSeedDivisionCapacities(2);
+    const spr20AgentCaps = buildSeedAgentCapacities(2);
+    for (const div of CANONICAL_DIVISIONS) {
+      insertDivCap.run('SPR-20', div.id, spr20DivCaps[div.id]);
+    }
+    for (const agent of CANONICAL_AGENTS) {
+      insertAgentCap.run('SPR-20', agent.id, spr20AgentCaps[agent.id]);
+    }
+    insertItem.run(
+      'SPR-20',
+      'ARC-201',
+      'In-Memory / Distributed Candidate Profile Cache & Search Index',
+      13,
+      'architecture',
+      4,
+      'in_sprint',
+      1,
+      spr20Created,
+      null,
+      spr20Created,
+    );
+    insertItem.run(
+      'SPR-20',
+      'BL-201',
+      'Candidate Talent Marketplace Directory & Filter Rails',
+      8,
+      'engineering',
+      5,
+      'in_sprint',
+      1,
+      spr20Created,
+      null,
+      spr20Created,
+    );
+    insertItem.run(
+      'SPR-20',
+      'BL-202',
+      'Interactive Psychometric Simulation Engine & Scoring Webhooks',
+      8,
+      'engineering',
+      6,
+      'in_sprint',
+      1,
+      spr20Created,
+      null,
+      spr20Created,
+    );
+    insertItem.run(
+      'SPR-20',
+      'OFC-201',
+      '3D Office Floor 2 Boardroom Interview Simulator & Holographic Avatars',
+      5,
+      'engineering',
+      9,
+      'in_sprint',
+      1,
+      spr20Created,
+      null,
+      spr20Created,
+    );
+    insertItem.run(
+      'SPR-20',
+      'QAE-201',
+      'Talent Marketplace Multi-Criteria Search & Concurrency E2E Suite',
+      8,
+      'qa',
+      8,
+      'in_sprint',
+      1,
+      spr20Created,
+      null,
+      spr20Created,
+    );
+    insertItem.run(
+      'SPR-20',
+      'REC-201',
+      'Psychometric Assessment Validity Rubric & Candidate Feedback Loop',
+      5,
+      'executive',
+      2,
+      'in_sprint',
+      1,
+      spr20Created,
+      null,
+      spr20Created,
+    );
+    insertCeremony.run(
+      'CER-SPR20-PLAN',
+      'SPR-20',
+      'planning',
+      2,
+      'Sprint 20 Planning Ceremony convened. Scope committed: Candidate Talent Marketplace Directory, In-Memory Candidate Profile Cache & Search Index, Interactive Psychometric Simulation Engine, Floor 2 Boardroom 3D Interview Space, and Automated Concurrency E2E Test Suite. Total committed: 47 SP across 4 divisions (Architecture: 13 SP, Engineering: 21 SP, QA: 8 SP, Executive: 5 SP). Total capacity: 140 SP. Zero-drift Industrial Precision Workbench UI enforced.',
+      JSON.stringify([
+        { text: 'Implement In-Memory / Distributed Candidate Profile Cache with <50ms lookup (ARC-201)', ownerAgentId: 4, done: false },
+        { text: 'Build Candidate Talent Marketplace Directory with docked filter rails and skeleton shimmer (BL-201)', ownerAgentId: 5, done: false },
+        { text: 'Develop Interactive Psychometric Simulation Engine & scoring webhooks (BL-202)', ownerAgentId: 6, done: false },
+        { text: 'Render Floor 2 Boardroom Interview Simulator & holographic candidate avatars in 3D Office (OFC-201)', ownerAgentId: 9, done: false },
+        { text: 'Execute Multi-Criteria Search & Concurrency E2E Test Suite with zero regressions (QAE-201)', ownerAgentId: 8, done: false },
+        { text: 'Publish Psychometric Assessment Validity Rubric and Ethics Charter to Docs Hub (REC-201)', ownerAgentId: 2, done: false },
+      ]),
+      spr20Created,
+      '2027-01-10T08:30:00.000Z',
     );
   });
 
