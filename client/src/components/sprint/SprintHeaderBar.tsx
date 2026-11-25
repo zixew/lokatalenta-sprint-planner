@@ -2,12 +2,19 @@ import {
   Activity,
   AlertTriangle,
   ArrowDownToLine,
+  Check,
   CheckCircle2,
+  Copy,
   Play,
   Plus,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CANONICAL_AGENTS, CANONICAL_DIVISIONS } from '../../contracts/canonical.ts';
+import {
+  AGENTS_BY_ID,
+  CANONICAL_AGENTS,
+  CANONICAL_DIVISIONS,
+  DIVISIONS_BY_ID,
+} from '../../contracts/canonical.ts';
 import type { SprintRecord } from '../../lib/api.ts';
 import { Badge } from '../ui/Badge.tsx';
 import { Button } from '../ui/Button.tsx';
@@ -16,6 +23,92 @@ function statusBadgeTone(status: SprintRecord['status']): 'amber' | 'teal' | 'sl
   if (status === 'active') return 'teal';
   if (status === 'completed') return 'slate';
   return 'amber';
+}
+
+const ITEM_STATUS_LABELS: Record<SprintRecord['items'][number]['status'], string> = {
+  in_sprint: 'In Sprint',
+  in_progress: 'In Progress',
+  review: 'In Review',
+  done: 'Done',
+};
+
+function buildSprintMarkdownReport(
+  sprint: SprintRecord,
+  health: {
+    label: string;
+    overallocatedDivs: number;
+    overallocatedAgents: number;
+    hasGoal: boolean;
+    hasScope: boolean;
+    balancedLoad: boolean;
+  },
+  utilizationPct: number,
+): string {
+  const { committedPoints, completedPoints, remainingPoints, totalCapacityPoints } = sprint.metrics;
+  const divisionLines = CANONICAL_DIVISIONS.map((div) => {
+    const divCommitted = sprint.items
+      .filter((item) => item.ownerDivision === div.id)
+      .reduce((acc, item) => acc + item.storyPoints, 0);
+    const divCap = sprint.divisionCapacities[div.id] ?? 0;
+    const divPct = divCap > 0 ? Math.round((divCommitted / divCap) * 100) : divCommitted > 0 ? 100 : 0;
+    return `| ${div.shortName} | ${divCommitted} SP | ${divCap} SP | ${divPct}% |`;
+  });
+
+  const scopeLines =
+    sprint.items.length === 0
+      ? ['- _No items assigned yet._']
+      : sprint.items.map((item) => {
+          const divName = DIVISIONS_BY_ID[item.ownerDivision].shortName;
+          const agent = item.ownerAgentId !== null ? AGENTS_BY_ID[item.ownerAgentId] : undefined;
+          const ownerLabel = agent ? `${divName} · #${agent.id} ${agent.shortName}` : divName;
+          return `- \`${item.itemId}\` **[${ITEM_STATUS_LABELS[item.status]}]** ${item.title} (${item.storyPoints} SP · ${ownerLabel})`;
+        });
+
+  return [
+    `# Sprint Readiness & Scope: ${sprint.id} — ${sprint.name}`,
+    '',
+    `- **Status:** ${sprint.status.toUpperCase()}`,
+    `- **Window:** ${sprint.startDate} -> ${sprint.endDate}`,
+    `- **Goal:** ${sprint.goal?.trim() || 'No sprint goal recorded.'}`,
+    `- **Readiness:** ${health.label} (Goal: ${health.hasGoal ? 'Ready' : 'Missing'}, Scope: ${sprint.metrics.itemCount} items, Balance: ${health.balancedLoad ? `${utilizationPct}% load` : `${health.overallocatedDivs} div / ${health.overallocatedAgents} agent over`}, Ceremonies: ${sprint.ceremonies.length})`,
+    `- **Velocity & Capacity:** ${committedPoints} / ${totalCapacityPoints} SP committed (${utilizationPct}%) · ${completedPoints} SP done · ${remainingPoints} SP remaining`,
+    '',
+    '## Division Capacity Breakdown',
+    '| Division | Committed | Capacity | Utilization |',
+    '| --- | ---: | ---: | ---: |',
+    ...divisionLines,
+    '',
+    `## Sprint Scope (${sprint.items.length} items)`,
+    ...scopeLines,
+  ].join('\n');
+}
+
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fallback below when Clipboard API is restricted.
+    }
+  }
+  if (typeof document === 'undefined') return false;
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', 'true');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  let ok = false;
+  try {
+    ok = document.execCommand('copy');
+  } catch {
+    ok = false;
+  } finally {
+    document.body.removeChild(textarea);
+  }
+  return ok;
 }
 
 export function SprintHeaderBar({
@@ -43,7 +136,18 @@ export function SprintHeaderBar({
     capacity > 0 ? Math.round((committed / capacity) * 100) : committed > 0 ? 100 : 0;
 
   const [healthOpen, setHealthOpen] = useState(false);
+  const [copiedSprintId, setCopiedSprintId] = useState<string | null>(null);
   const healthRef = useRef<HTMLDivElement | null>(null);
+  const copyTimerRef = useRef<number | null>(null);
+  const copied = Boolean(selectedSprint && copiedSprintId === selectedSprint.id);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current !== null) {
+        window.clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!healthOpen) return;
@@ -110,6 +214,22 @@ export function SprintHeaderBar({
       balancedLoad,
     };
   }, [selectedSprint, utilizationPct]);
+
+  const handleCopyMarkdown = async () => {
+    if (!selectedSprint || !health) return;
+    const markdown = buildSprintMarkdownReport(selectedSprint, health, utilizationPct);
+    const copiedOk = await copyTextToClipboard(markdown);
+    if (copiedOk) {
+      setCopiedSprintId(selectedSprint.id);
+      if (copyTimerRef.current !== null) {
+        window.clearTimeout(copyTimerRef.current);
+      }
+      copyTimerRef.current = window.setTimeout(() => {
+        setCopiedSprintId(null);
+        copyTimerRef.current = null;
+      }, 2000);
+    }
+  };
 
   return (
     <section className="rounded-xl border border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22] p-5">
@@ -234,15 +354,31 @@ export function SprintHeaderBar({
           </Button>
 
           {selectedSprint && (
-            <Button
-              variant="secondary"
-              size="sm"
-              data-testid="open-backlog-drawer-btn"
-              onClick={onOpenBacklogDrawer}
-            >
-              <ArrowDownToLine className="h-3.5 w-3.5" aria-hidden="true" />
-              Pull Backlog Items
-            </Button>
+            <>
+              <Button
+                variant="secondary"
+                size="sm"
+                data-testid="sprint-copy-md-btn"
+                onClick={() => void handleCopyMarkdown()}
+              >
+                {copied ? (
+                  <Check className="h-3.5 w-3.5 text-[#0F766E] dark:text-teal-400" aria-hidden="true" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+                )}
+                {copied ? 'Copied' : 'Copy MD'}
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                data-testid="open-backlog-drawer-btn"
+                onClick={onOpenBacklogDrawer}
+              >
+                <ArrowDownToLine className="h-3.5 w-3.5" aria-hidden="true" />
+                Pull Backlog Items
+              </Button>
+            </>
           )}
 
           {selectedSprint?.status === 'planned' && (

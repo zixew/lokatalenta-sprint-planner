@@ -14,6 +14,15 @@ import { Button } from '../ui/Button.tsx';
 import { ProgressBar } from '../ui/ProgressBar.tsx';
 
 type AgentAvailabilityFilter = 'all' | 'overallocated' | 'available';
+type ScopeStatusFilter = 'all' | SprintItemStatus;
+
+const SCOPE_STATUS_OPTIONS: ReadonlyArray<{ id: ScopeStatusFilter; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'in_sprint', label: 'In Sprint' },
+  { id: 'in_progress', label: 'In Progress' },
+  { id: 'review', label: 'Review' },
+  { id: 'done', label: 'Done' },
+];
 
 function getTone(committed: number, capacity: number): 'teal' | 'amber' | 'rose' {
   if (committed > capacity) return 'rose';
@@ -48,6 +57,7 @@ export function CapacityMatrix({
     lounge: true,
   });
   const [divisionFilter, setDivisionFilter] = useState<DivisionId | 'all'>('all');
+  const [scopeStatusFilter, setScopeStatusFilter] = useState<ScopeStatusFilter>('all');
 
   return (
     <CapacityMatrixInner
@@ -59,6 +69,8 @@ export function CapacityMatrix({
       }
       divisionFilter={divisionFilter}
       onChangeDivisionFilter={setDivisionFilter}
+      scopeStatusFilter={scopeStatusFilter}
+      onChangeScopeStatusFilter={setScopeStatusFilter}
       onSaveCapacities={onSaveCapacities}
       onUpdateItemStatus={onUpdateItemStatus}
       onRemoveItem={onRemoveItem}
@@ -74,6 +86,8 @@ function CapacityMatrixInner({
   onToggleDivision,
   divisionFilter,
   onChangeDivisionFilter,
+  scopeStatusFilter,
+  onChangeScopeStatusFilter,
   onSaveCapacities,
   onUpdateItemStatus,
   onRemoveItem,
@@ -85,6 +99,8 @@ function CapacityMatrixInner({
   onToggleDivision: (divisionId: DivisionId) => void;
   divisionFilter: DivisionId | 'all';
   onChangeDivisionFilter: (value: DivisionId | 'all') => void;
+  scopeStatusFilter: ScopeStatusFilter;
+  onChangeScopeStatusFilter: (value: ScopeStatusFilter) => void;
   onSaveCapacities: (payload: {
     divisionCapacities: Record<DivisionId, number>;
     agentCapacities: Record<number, number>;
@@ -150,6 +166,25 @@ function CapacityMatrixInner({
 
   const toggleDivision = onToggleDivision;
   const setDivisionFilter = onChangeDivisionFilter;
+
+  const scopeStatusCounts = useMemo(() => {
+    const counts: Record<ScopeStatusFilter, number> = {
+      all: sprint.items.length,
+      in_sprint: 0,
+      in_progress: 0,
+      review: 0,
+      done: 0,
+    };
+    for (const item of sprint.items) {
+      counts[item.status] += 1;
+    }
+    return counts;
+  }, [sprint.items]);
+
+  const filteredScopeItems = useMemo(() => {
+    if (scopeStatusFilter === 'all') return sprint.items;
+    return sprint.items.filter((item) => item.status === scopeStatusFilter);
+  }, [sprint.items, scopeStatusFilter]);
 
   const visibleDivisions =
     divisionFilter === 'all'
@@ -488,7 +523,7 @@ function CapacityMatrixInner({
         data-testid="sprint-items-list"
         className="lg:col-span-5 rounded-xl border border-[#E5E3DC] dark:border-zinc-800 bg-white dark:bg-[#161B22] p-5"
       >
-        <div className="flex items-center justify-between border-b border-[#E5E3DC] dark:border-zinc-800 pb-4">
+        <div className="flex items-center justify-between gap-2 border-b border-[#E5E3DC] dark:border-zinc-800 pb-4">
           <div>
             <h2 className="text-base font-bold text-[#18181B] dark:text-slate-100">
               Assigned Sprint Scope
@@ -497,9 +532,40 @@ function CapacityMatrixInner({
               Track progress from In Sprint to Done (updates burndown &amp; Backlog sync).
             </p>
           </div>
-          <Badge tone="teal" className="font-mono-tabular">
-            {sprint.items.length} items
+          <Badge tone="teal" className="shrink-0 font-mono-tabular">
+            {filteredScopeItems.length === sprint.items.length
+              ? `${sprint.items.length} items`
+              : `${filteredScopeItems.length} / ${sprint.items.length} items`}
           </Badge>
+        </div>
+
+        <div
+          data-testid="scope-status-filters"
+          role="group"
+          aria-label="Filter sprint scope by status"
+          className="mt-3 flex flex-wrap items-center gap-1.5"
+        >
+          {SCOPE_STATUS_OPTIONS.map((opt) => {
+            const active = scopeStatusFilter === opt.id;
+            const count = scopeStatusCounts[opt.id];
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                data-testid={`scope-filter-${opt.id}`}
+                aria-pressed={active}
+                onClick={() => onChangeScopeStatusFilter(opt.id)}
+                className={`inline-flex min-h-[32px] items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] lg:min-h-[28px] ${
+                  active
+                    ? 'border-[#0F766E] bg-teal-50 text-[#0F766E] dark:border-teal-500 dark:bg-teal-950/60 dark:text-teal-300'
+                    : 'border-[#E5E3DC] bg-[#F6F5F1] text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-[#0D1117] dark:text-slate-300 dark:hover:bg-zinc-800'
+                }`}
+              >
+                <span>{opt.label}</span>
+                <span className="font-mono-tabular text-[11px] opacity-80">({count})</span>
+              </button>
+            );
+          })}
         </div>
 
         {sprint.items.length === 0 ? (
@@ -523,9 +589,25 @@ function CapacityMatrixInner({
               Pull from Backlog
             </Button>
           </div>
+        ) : filteredScopeItems.length === 0 ? (
+          <div
+            data-testid="empty-scope-filter-state"
+            className="mt-4 rounded-lg border border-dashed border-[#E5E3DC] dark:border-zinc-700 bg-[#F6F5F1] dark:bg-[#0D1117] p-5 text-center"
+          >
+            <p className="text-xs font-medium text-[#52525B] dark:text-slate-400">
+              No committed sprint items match this status filter.
+            </p>
+            <button
+              type="button"
+              onClick={() => onChangeScopeStatusFilter('all')}
+              className="mt-2 text-xs font-semibold text-[#0F766E] underline hover:no-underline dark:text-teal-400"
+            >
+              Show all items
+            </button>
+          </div>
         ) : (
           <div className="mt-4 space-y-2.5">
-            {sprint.items.map((item) => {
+            {filteredScopeItems.map((item) => {
               const division = DIVISIONS_BY_ID[item.ownerDivision];
               const agent =
                 item.ownerAgentId !== null ? AGENTS_BY_ID[item.ownerAgentId] : undefined;
