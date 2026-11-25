@@ -81,8 +81,8 @@ describe('QAE-171: Cold-Start E2E Resilience & Idempotent Migration Suite', () =
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: 'SPR-17',
-        name: 'Sprint 17 — Cold-Start Resilience',
+        id: 'SPR-TEST-COLD',
+        name: 'Sprint Test — Cold-Start Resilience',
         goal: '0% data loss across cold-starts',
         status: 'active',
         startDate: '2026-12-01',
@@ -91,7 +91,7 @@ describe('QAE-171: Cold-Start E2E Resilience & Idempotent Migration Suite', () =
     });
     expect(createRes.status).toBe(201);
 
-    const assignRes = await fetch(`${baseUrlA}/api/sprints/SPR-17/assign`, {
+    const assignRes = await fetch(`${baseUrlA}/api/sprints/SPR-TEST-COLD/assign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -121,7 +121,7 @@ describe('QAE-171: Cold-Start E2E Resilience & Idempotent Migration Suite', () =
     const t0 = performance.now();
     const [healthRes, sprintRes] = await Promise.all([
       fetch(`${baseUrlB}/api/health`),
-      fetch(`${baseUrlB}/api/sprints/SPR-17`),
+      fetch(`${baseUrlB}/api/sprints/SPR-TEST-COLD`),
     ]);
     const elapsedMs = performance.now() - t0;
 
@@ -140,7 +140,7 @@ describe('QAE-171: Cold-Start E2E Resilience & Idempotent Migration Suite', () =
     const sprintJson = (await sprintRes.json()) as {
       sprint: { id: string; status: string; items: Array<{ itemId: string; storyPoints: number }> };
     };
-    expect(sprintJson.sprint.id).toBe('SPR-17');
+    expect(sprintJson.sprint.id).toBe('SPR-TEST-COLD');
     expect(sprintJson.sprint.status).toBe('active');
     expect(sprintJson.sprint.items.some((i) => i.itemId === 'ARC-171' && i.storyPoints === 13)).toBe(
       true,

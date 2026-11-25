@@ -250,7 +250,7 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       'SPR-16',
       'Sprint 16 — Tech Debt, Complex Responsive & 3-POV QA',
       'Enforce 100% free-access policy, audit Mermaid/ELK & serverless /tmp tech debt, and execute 375px/768px/1280px+ 3-POV QA.',
-      'active',
+      'completed',
       '2026-11-30',
       '2026-12-11',
       spr16Created,
@@ -323,10 +323,10 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'lounge',
       13,
-      'review',
+      'done',
       1,
       spr16Created,
-      null,
+      '2026-11-25T08:45:00.000Z',
       '2026-11-25T08:45:00.000Z',
     );
     insertCeremony.run(
@@ -341,6 +341,268 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       ]),
       spr16Created,
       '2026-11-25T08:45:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR16-REV',
+      'SPR-16',
+      'review',
+      0,
+      'All 5 items (26 SP) verified live across Sprint Planner, Backlog, Docs Hub, and 3D Office.',
+      '[]',
+      '2026-11-25T09:00:00.000Z',
+      '2026-11-25T09:00:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR16-RETRO',
+      'SPR-16',
+      'retrospective',
+      1,
+      'Adopted 4-Pillar Sync SOP and Anti-Slop design standards (DESIGN.md). Identified Turso migration as #1 priority.',
+      '[]',
+      '2026-11-25T09:30:00.000Z',
+      '2026-11-25T09:30:00.000Z',
+    );
+
+    // ==========================================
+    // SPR-17 — COMPLETED (47 SP)
+    // ==========================================
+    const spr17Created = '2026-12-01T08:00:00.000Z';
+    insertSprint.run(
+      'SPR-17',
+      'Sprint 17 — Architecture Hardening, Persistent Storage Migration & Anti-Slop UI Cohesion',
+      '0% Data Loss & <500ms State Reconciliation on cold-start; Industrial Precision Workbench UI cohesion across 4 pillars.',
+      'completed',
+      '2026-12-01',
+      '2026-12-12',
+      spr17Created,
+      '2026-12-12T17:00:00.000Z',
+    );
+    const spr17DivCaps = buildSeedDivisionCapacities(1);
+    const spr17AgentCaps = buildSeedAgentCapacities(1);
+    for (const div of CANONICAL_DIVISIONS) {
+      insertDivCap.run('SPR-17', div.id, spr17DivCaps[div.id]);
+    }
+    for (const agent of CANONICAL_AGENTS) {
+      insertAgentCap.run('SPR-17', agent.id, spr17AgentCaps[agent.id]);
+    }
+    insertItem.run(
+      'SPR-17',
+      'ARC-171',
+      'Setup Turso/libSQL Cloud Database Adapter',
+      13,
+      'architecture',
+      4,
+      'done',
+      1,
+      spr17Created,
+      '2026-12-08T15:00:00.000Z',
+      '2026-12-08T15:00:00.000Z',
+    );
+    insertItem.run(
+      'SPR-17',
+      'BL-171',
+      'DB Schema Migration Scripts & Idempotent Seeding',
+      13,
+      'engineering',
+      6,
+      'done',
+      1,
+      spr17Created,
+      '2026-12-09T16:00:00.000Z',
+      '2026-12-09T16:00:00.000Z',
+    );
+    insertItem.run(
+      'SPR-17',
+      'BL-172',
+      'Anti-Slop UI Cohesion: Docked Tabs, Palette Tokens & Skeleton Loader',
+      8,
+      'engineering',
+      5,
+      'done',
+      1,
+      spr17Created,
+      '2026-12-10T14:00:00.000Z',
+      '2026-12-10T14:00:00.000Z',
+    );
+    insertItem.run(
+      'SPR-17',
+      'BL-173',
+      'CSS Motion System: Transition Tokens, Drawer Spring & Reduced-Motion',
+      5,
+      'engineering',
+      20,
+      'done',
+      1,
+      spr17Created,
+      '2026-12-11T11:00:00.000Z',
+      '2026-12-11T11:00:00.000Z',
+    );
+    insertItem.run(
+      'SPR-17',
+      'QAE-171',
+      'Cold-Start E2E Resilience Suite',
+      8,
+      'qa',
+      8,
+      'done',
+      1,
+      spr17Created,
+      '2026-12-12T16:00:00.000Z',
+      '2026-12-12T16:00:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR17-PLAN',
+      'SPR-17',
+      'planning',
+      2,
+      'Sprint 17 locked for Turso/libSQL persistent storage migration (ARC-171, BL-171), Anti-Slop UI cohesion & motion system (BL-172, BL-173), and Cold-Start E2E resilience (QAE-171). Total 47 SP committed.',
+      JSON.stringify([
+        { text: 'Deploy Turso/libSQL adapter and verify cold-start hydration', ownerAgentId: 4, done: true },
+        { text: 'Run idempotent schema migrations and verify 0 duplication', ownerAgentId: 6, done: true },
+        { text: 'Implement anti-slop tokens, docked tabs, skeleton loader', ownerAgentId: 5, done: true },
+        { text: 'Add CSS motion tokens and prefers-reduced-motion reset', ownerAgentId: 20, done: true },
+        { text: 'Execute cold-start resilience test suite (21/21 passed)', ownerAgentId: 8, done: true },
+      ]),
+      spr17Created,
+      '2026-12-01T08:30:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR17-REV',
+      'SPR-17',
+      'review',
+      0,
+      'All 5 items (47/47 SP) verified live and complete across Sprint Planner, Backlog, Docs Hub, and 3D Office.',
+      '[]',
+      '2026-12-12T16:30:00.000Z',
+      '2026-12-12T16:30:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR17-RETRO',
+      'SPR-17',
+      'retrospective',
+      1,
+      'Sprint 17 Retro: Ephemeral /tmp storage risk mitigated with Turso cloud adapter. Anti-slop UI tokens resolved visual inconsistencies across all viewports.',
+      '[]',
+      '2026-12-12T17:00:00.000Z',
+      '2026-12-12T17:00:00.000Z',
+    );
+
+    // ==========================================
+    // SPR-18 — ACTIVE (47 SP COMMITTED)
+    // ==========================================
+    const spr18Created = '2026-12-15T08:00:00.000Z';
+    insertSprint.run(
+      'SPR-18',
+      'Sprint 18 — Multi-Repo Turso Propagation, Privacy Guardrails & 3D Office Live Telemetry',
+      'Propagate Turso/libSQL persistent storage to Backlog & Docs Hub, enforce candidate privacy guardrails (REC-001), and synchronize 3D Office live agent floor telemetry.',
+      'active',
+      '2026-12-15',
+      '2026-12-26',
+      spr18Created,
+      '2026-12-15T09:00:00.000Z',
+    );
+    const spr18DivCaps = buildSeedDivisionCapacities(1);
+    const spr18AgentCaps = buildSeedAgentCapacities(1);
+    for (const div of CANONICAL_DIVISIONS) {
+      insertDivCap.run('SPR-18', div.id, spr18DivCaps[div.id]);
+    }
+    for (const agent of CANONICAL_AGENTS) {
+      insertAgentCap.run('SPR-18', agent.id, spr18AgentCaps[agent.id]);
+    }
+    insertItem.run(
+      'SPR-18',
+      'REC-001',
+      'Stakeholder Rubric & Candidate Telemetry Privacy Guardrails',
+      2,
+      'executive',
+      2,
+      'in_sprint',
+      1,
+      spr18Created,
+      null,
+      spr18Created,
+    );
+    insertItem.run(
+      'SPR-18',
+      'ARC-181',
+      'Propagate Turso/libSQL Adapter to Backlog & Docs Hub Services',
+      13,
+      'architecture',
+      4,
+      'in_sprint',
+      1,
+      spr18Created,
+      null,
+      spr18Created,
+    );
+    insertItem.run(
+      'SPR-18',
+      'BL-181',
+      'Unified Schema Migrations & Cross-Service Seeding Runner',
+      8,
+      'engineering',
+      6,
+      'in_sprint',
+      1,
+      spr18Created,
+      null,
+      spr18Created,
+    );
+    insertItem.run(
+      'SPR-18',
+      'BL-REVAMP-01',
+      'Unified Design Tokens, Color Palette & Typography Engine',
+      8,
+      'engineering',
+      5,
+      'in_sprint',
+      1,
+      spr18Created,
+      null,
+      spr18Created,
+    );
+    insertItem.run(
+      'SPR-18',
+      'OFC-181',
+      '3D Office Live Agent Floor Telemetry & Event Gateway Sync',
+      8,
+      'engineering',
+      9,
+      'in_sprint',
+      1,
+      spr18Created,
+      null,
+      spr18Created,
+    );
+    insertItem.run(
+      'SPR-18',
+      'QAE-181',
+      'Cross-Service Multi-Repo Cold-Start & Telemetry E2E Suite',
+      8,
+      'qa',
+      8,
+      'in_sprint',
+      1,
+      spr18Created,
+      null,
+      spr18Created,
+    );
+    insertCeremony.run(
+      'CER-SPR18-PLAN',
+      'SPR-18',
+      'planning',
+      2,
+      'Sprint 18 locked for Multi-Repo Turso Propagation (ARC-181, BL-181), Privacy Guardrails (REC-001), Anti-Slop UI Revamp (BL-REVAMP-01), 3D Office Live Telemetry (OFC-181), and Cross-Service E2E Suite (QAE-181). Total 47 SP committed.',
+      JSON.stringify([
+        { text: 'Implement TursoAdapter in lokatalenta-backlog and lokatalenta-docs', ownerAgentId: 4, done: false },
+        { text: 'Build unified schema migrations runner for backlog and docs', ownerAgentId: 6, done: false },
+        { text: 'Ship anti-slop docked tabs and palette tokens across docs and backlog', ownerAgentId: 5, done: false },
+        { text: 'Establish privacy filters on candidate telemetry events', ownerAgentId: 2, done: false },
+        { text: 'Connect 3D Office agent positions to Event Gateway stream', ownerAgentId: 9, done: false },
+        { text: 'Execute cross-service cold-start resilience and telemetry E2E suite', ownerAgentId: 8, done: false },
+      ]),
+      spr18Created,
+      '2026-12-15T08:30:00.000Z',
     );
   });
 
