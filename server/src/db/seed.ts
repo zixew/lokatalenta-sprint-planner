@@ -488,18 +488,19 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
     );
 
     // ==========================================
-    // SPR-18 — ACTIVE (47 SP COMMITTED)
+    // SPR-18 — COMPLETED (102/102 SP)
     // ==========================================
     const spr18Created = '2026-12-15T08:00:00.000Z';
+    const spr18Closed = '2026-12-26T17:00:00.000Z';
     insertSprint.run(
       'SPR-18',
       'Sprint 18 — Multi-Repo Turso Propagation, Privacy Guardrails & 3D Office Live Telemetry',
       'Propagate Turso/libSQL persistent storage to Backlog & Docs Hub, enforce candidate privacy guardrails (REC-001), and synchronize 3D Office live agent floor telemetry.',
-      'active',
+      'completed',
       '2026-12-15',
       '2026-12-26',
       spr18Created,
-      '2026-12-15T09:00:00.000Z',
+      spr18Closed,
     );
     const spr18DivCaps = buildSeedDivisionCapacities(1);
     const spr18AgentCaps = buildSeedAgentCapacities(1);
@@ -516,11 +517,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       2,
       'executive',
       2,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -529,11 +530,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       13,
       'architecture',
       4,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -542,11 +543,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       6,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -555,11 +556,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       21,
       'executive',
       0,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -568,11 +569,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       5,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -581,11 +582,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       6,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -594,11 +595,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'engineering',
       20,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -607,11 +608,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       5,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -620,11 +621,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'engineering',
       9,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -633,11 +634,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'qa',
       8,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -646,11 +647,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       9,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertItem.run(
       'SPR-18',
@@ -659,28 +660,172 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'qa',
       8,
-      'in_sprint',
+      'done',
       1,
       spr18Created,
-      null,
-      spr18Created,
+      spr18Closed,
+      spr18Closed,
     );
     insertCeremony.run(
       'CER-SPR18-PLAN',
       'SPR-18',
       'planning',
       2,
-      'Sprint 18 locked for Multi-Repo Turso Propagation (ARC-181, BL-181), Privacy Guardrails (REC-001), Anti-Slop UI Revamp (BL-REVAMP-01), 3D Office Live Telemetry (OFC-181), and Cross-Service E2E Suite (QAE-181). Total 47 SP committed.',
+      'Sprint 18 locked for Multi-Repo Turso Propagation, Privacy Guardrails, Anti-Slop UI Revamp, and 3D Office Live Telemetry. Total 102 SP committed.',
       JSON.stringify([
-        { text: 'Implement TursoAdapter in lokatalenta-backlog and lokatalenta-docs', ownerAgentId: 4, done: false },
-        { text: 'Build unified schema migrations runner for backlog and docs', ownerAgentId: 6, done: false },
-        { text: 'Ship anti-slop docked tabs and palette tokens across docs and backlog', ownerAgentId: 5, done: false },
-        { text: 'Establish privacy filters on candidate telemetry events', ownerAgentId: 2, done: false },
-        { text: 'Connect 3D Office agent positions to Event Gateway stream', ownerAgentId: 9, done: false },
-        { text: 'Execute cross-service cold-start resilience and telemetry E2E suite', ownerAgentId: 8, done: false },
+        { text: 'Implement TursoAdapter in lokatalenta-backlog and lokatalenta-docs', ownerAgentId: 4, done: true },
+        { text: 'Build unified schema migrations runner for backlog and docs', ownerAgentId: 6, done: true },
+        { text: 'Ship anti-slop docked tabs and palette tokens across all apps', ownerAgentId: 5, done: true },
+        { text: 'Establish privacy filters on candidate telemetry events', ownerAgentId: 2, done: true },
+        { text: 'Connect 3D Office agent positions to Event Gateway stream', ownerAgentId: 9, done: true },
+        { text: 'Execute cross-service cold-start resilience and telemetry E2E suite', ownerAgentId: 8, done: true },
       ]),
       spr18Created,
       '2026-12-15T08:30:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR18-REV',
+      'SPR-18',
+      'review',
+      0,
+      'Sprint 18 completed with 100% velocity (102/102 SP). Anti-slop UI tokens, Turso persistence, and 3D live telemetry all validated.',
+      JSON.stringify([
+        { text: 'Archive Sprint 18 deliverables into ecosystem audit log', ownerAgentId: 12, done: true },
+        { text: 'Confirm live production zero-downtime deployment for all services', ownerAgentId: 10, done: true },
+      ]),
+      spr18Closed,
+      '2026-12-26T15:30:00.000Z',
+    );
+    insertCeremony.run(
+      'CER-SPR18-RET',
+      'SPR-18',
+      'retrospective',
+      1,
+      'Sprint 18 Retrospective: Excellent visual overhaul execution and testing rigor. Transitioning to Sprint 19 AI Evaluation Pipelines.',
+      JSON.stringify([
+        { text: 'Formalize Sprint 18 closure documentation on Docs Hub', ownerAgentId: 12, done: true },
+        { text: 'Prepare Sprint 19 candidate matching backlog items', ownerAgentId: 2, done: true },
+      ]),
+      spr18Closed,
+      '2026-12-26T16:30:00.000Z',
+    );
+
+    // ==========================================
+    // SPR-19 — ACTIVE (47 SP COMMITTED)
+    // ==========================================
+    const spr19Created = '2026-12-27T08:00:00.000Z';
+    insertSprint.run(
+      'SPR-19',
+      'Sprint 19 — AI Candidate Evaluation Pipelines & High-Throughput Matching',
+      'Implement decoupled asynchronous AI evaluation scoring pipeline, automated multi-criteria rubrics, 3D Office AI Lab telemetry visualizer, and candidate batch ingestion with ethical governance.',
+      'active',
+      '2026-12-27',
+      '2027-01-09',
+      spr19Created,
+      '2026-12-27T09:00:00.000Z',
+    );
+    const spr19DivCaps = buildSeedDivisionCapacities(1);
+    const spr19AgentCaps = buildSeedAgentCapacities(1);
+    for (const div of CANONICAL_DIVISIONS) {
+      insertDivCap.run('SPR-19', div.id, spr19DivCaps[div.id]);
+    }
+    for (const agent of CANONICAL_AGENTS) {
+      insertAgentCap.run('SPR-19', agent.id, spr19AgentCaps[agent.id]);
+    }
+    insertItem.run(
+      'SPR-19',
+      'ARC-191',
+      'AI Evaluation Pipeline Engine & Asynchronous Scoring Worker',
+      13,
+      'architecture',
+      4,
+      'in_sprint',
+      1,
+      spr19Created,
+      null,
+      spr19Created,
+    );
+    insertItem.run(
+      'SPR-19',
+      'BL-191',
+      'Automated Multi-Criteria Scoring Rubrics & Candidate Match UI',
+      8,
+      'engineering',
+      5,
+      'in_sprint',
+      1,
+      spr19Created,
+      null,
+      spr19Created,
+    );
+    insertItem.run(
+      'SPR-19',
+      'BL-192',
+      'High-Throughput Candidate Batch Ingestion & CSV Export API',
+      8,
+      'engineering',
+      6,
+      'in_sprint',
+      1,
+      spr19Created,
+      null,
+      spr19Created,
+    );
+    insertItem.run(
+      'SPR-19',
+      'OFC-191',
+      '3D Office AI Research Lab Live Evaluation HUD & Visual Indicators',
+      5,
+      'engineering',
+      9,
+      'in_sprint',
+      1,
+      spr19Created,
+      null,
+      spr19Created,
+    );
+    insertItem.run(
+      'SPR-19',
+      'QAE-191',
+      'AI Assessment Pipeline E2E Load Test & Deterministic Scoring Validation',
+      8,
+      'qa',
+      8,
+      'in_sprint',
+      1,
+      spr19Created,
+      null,
+      spr19Created,
+    );
+    insertItem.run(
+      'SPR-19',
+      'REC-191',
+      'Talent Benchmark Governance & Ethical Evaluation Rubric Charter',
+      5,
+      'executive',
+      2,
+      'in_sprint',
+      1,
+      spr19Created,
+      null,
+      spr19Created,
+    );
+    insertCeremony.run(
+      'CER-SPR19-PLAN',
+      'SPR-19',
+      'planning',
+      2,
+      'Sprint 19 committed for AI Evaluation Pipeline Engine (ARC-191), Automated Multi-Criteria Rubrics (BL-191), Batch Ingestion API (BL-192), 3D Office AI Lab HUD (OFC-191), E2E Assessment Test Suite (QAE-191), and Ethical Rubric Charter (REC-191). Total 47 SP committed.',
+      JSON.stringify([
+        { text: 'Design asynchronous candidate scoring worker queue (ARC-191)', ownerAgentId: 4, done: false },
+        { text: 'Build interactive rubric evaluator and match UI (BL-191)', ownerAgentId: 5, done: false },
+        { text: 'Implement candidate batch CSV ingestion endpoint (BL-192)', ownerAgentId: 6, done: false },
+        { text: 'Harmonize Floor 3 AI Lab visualization with real-time scoring activity (OFC-191)', ownerAgentId: 9, done: false },
+        { text: 'Execute AI assessment determinism and stress test suite (QAE-191)', ownerAgentId: 8, done: false },
+        { text: 'Publish ethical AI evaluation charter to Docs Hub (REC-191)', ownerAgentId: 2, done: false },
+      ]),
+      spr19Created,
+      '2026-12-27T08:30:00.000Z',
     );
   });
 
