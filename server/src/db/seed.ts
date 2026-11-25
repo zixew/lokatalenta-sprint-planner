@@ -139,11 +139,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       'SPR-15',
       'Sprint 15 — Decoupled Ecosystem & 3D Telemetry',
       'Deliver Backlog, Sprint Planner, Docs Hub, and real-time Event Gateway integration.',
-      'active',
+      'completed',
       '2026-11-16',
       '2026-11-27',
       spr15Created,
-      '2026-11-24T10:00:00.000Z',
+      '2026-11-25T09:00:00.000Z',
     );
     const spr15DivCaps = buildSeedDivisionCapacities(1);
     const spr15AgentCaps = buildSeedAgentCapacities(1);
@@ -186,11 +186,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'engineering',
       19,
-      'in_progress',
+      'done',
       0,
       '2026-11-17T08:30:00.000Z',
-      null,
-      '2026-11-22T11:00:00.000Z',
+      '2026-11-24T14:30:00.000Z',
+      '2026-11-24T14:30:00.000Z',
     );
     insertItem.run(
       'SPR-15',
@@ -199,11 +199,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'qa',
       8,
-      'review',
+      'done',
       0,
       '2026-11-18T09:00:00.000Z',
-      null,
-      '2026-11-23T14:00:00.000Z',
+      '2026-11-24T16:00:00.000Z',
+      '2026-11-24T16:00:00.000Z',
     );
     insertItem.run(
       'SPR-15',
@@ -212,11 +212,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'devops',
       17,
-      'in_sprint',
+      'done',
       0,
       '2026-11-19T11:00:00.000Z',
-      null,
-      '2026-11-19T11:00:00.000Z',
+      '2026-11-24T17:15:00.000Z',
+      '2026-11-24T17:15:00.000Z',
     );
     insertItem.run(
       'SPR-15',
@@ -225,11 +225,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'lounge',
       23,
-      'in_sprint',
+      'done',
       0,
       '2026-11-19T13:00:00.000Z',
-      null,
-      '2026-11-19T13:00:00.000Z',
+      '2026-11-24T18:00:00.000Z',
+      '2026-11-24T18:00:00.000Z',
     );
     insertCeremony.run(
       'CER-SPR15-PLAN',
@@ -238,11 +238,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       2,
       'Committed 36 SP across 6 divisions with explicit capacity buffers for E2E verification.',
       JSON.stringify([
-        { text: 'Keep client JS chunks strictly under 250 kB', ownerAgentId: 18, done: false },
-        { text: 'Verify offline fallback when Backlog port 4102 is unreachable', ownerAgentId: 8, done: false },
+        { text: 'Keep client JS chunks strictly under 250 kB', ownerAgentId: 18, done: true },
+        { text: 'Verify offline fallback when Backlog port 4102 is unreachable', ownerAgentId: 8, done: true },
       ]),
       '2026-11-16T09:00:00.000Z',
-      '2026-11-16T09:00:00.000Z',
+      '2026-11-24T18:00:00.000Z',
     );
 
     const spr16Created = '2026-11-24T12:00:00.000Z';
@@ -250,11 +250,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       'SPR-16',
       'Sprint 16 — Tech Debt, Complex Responsive & 3-POV QA',
       'Enforce 100% free-access policy, audit Mermaid/ELK & serverless /tmp tech debt, and execute 375px/768px/1280px+ 3-POV QA.',
-      'planned',
+      'active',
       '2026-11-30',
       '2026-12-11',
       spr16Created,
-      spr16Created,
+      '2026-11-25T09:00:00.000Z',
     );
     const spr16DivCaps = buildSeedDivisionCapacities(1);
     const spr16AgentCaps = buildSeedAgentCapacities(1);
@@ -271,11 +271,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       3,
       'executive',
       1,
-      'in_sprint',
+      'done',
       1,
       spr16Created,
-      null,
-      spr16Created,
+      '2026-11-24T19:00:00.000Z',
+      '2026-11-24T19:00:00.000Z',
     );
     insertItem.run(
       'SPR-16',
@@ -284,11 +284,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'architecture',
       4,
-      'in_sprint',
+      'done',
       1,
       spr16Created,
-      null,
-      spr16Created,
+      '2026-11-24T20:30:00.000Z',
+      '2026-11-24T20:30:00.000Z',
     );
     insertItem.run(
       'SPR-16',
@@ -297,11 +297,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       8,
       'qa',
       8,
-      'in_sprint',
+      'done',
       1,
       spr16Created,
-      null,
-      spr16Created,
+      '2026-11-25T01:15:00.000Z',
+      '2026-11-25T01:15:00.000Z',
     );
     insertItem.run(
       'SPR-16',
@@ -310,11 +310,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'devops',
       17,
-      'in_sprint',
+      'done',
       1,
       spr16Created,
-      null,
-      spr16Created,
+      '2026-11-25T01:40:00.000Z',
+      '2026-11-25T01:40:00.000Z',
     );
     insertItem.run(
       'SPR-16',
@@ -323,11 +323,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       5,
       'lounge',
       13,
-      'in_sprint',
+      'review',
       1,
       spr16Created,
       null,
-      spr16Created,
+      '2026-11-25T08:45:00.000Z',
     );
     insertCeremony.run(
       'CER-SPR16-PLAN',
@@ -336,11 +336,11 @@ export function seedIfEmpty(db: DatabaseSync): boolean {
       2,
       'Sprint 16 locked for 100% Free-Access governance, tech debt mitigation, and complex 375px/768px/1280px+ 3-POV QA.',
       JSON.stringify([
-        { text: 'Verify 0 horizontal overflow on 375px mobile across all apps', ownerAgentId: 7, done: false },
-        { text: 'Verify XSS, CSV injection, race conditions, and state recovery', ownerAgentId: 17, done: false },
+        { text: 'Verify 0 horizontal overflow on 375px mobile across all apps', ownerAgentId: 7, done: true },
+        { text: 'Verify XSS, CSV injection, race conditions, and state recovery', ownerAgentId: 17, done: true },
       ]),
       spr16Created,
-      spr16Created,
+      '2026-11-25T08:45:00.000Z',
     );
   });
 
